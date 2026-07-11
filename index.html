@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="icon" type="image/png" sizes="192x192" href="english-192.png">
     <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="english-512.png">
     <link rel="icon" type="image/png" sizes="512x512" href="english-512.png">
@@ -17,287 +17,797 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft Yahei", Arial, sans-serif;
+            font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        body {
+        html, body {
             background: #1a1a2e;
             color: #fff;
-            padding: 20px;
+        }
+        body {
+            padding: 16px 16px env(safe-area-inset-bottom) 16px;
             max-width: 900px;
             margin: 0 auto;
+            min-height: 100vh;
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .title {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #4fc3f7;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, #4fc3f7, #81d4fa, #ffd54f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .tip {
+            color: #888;
+            font-size: 13px;
+        }
+        /* 控制栏 */
+        .control-bar {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .row-label {
             color: #aaa;
-            font-size: 14px;
+            font-size: 13px;
+            min-width: 56px;
         }
-        .select-box {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: none;
-            margin-bottom: 25px;
+        .chip {
+            padding: 7px 12px;
+            border-radius: 16px;
             background: #2d2d44;
-            color: #fff;
+            color: #ccc;
+            font-size: 13px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .chip.active {
+            background: #0288d1;
+            color: #fff;
+            border-color: #4fc3f7;
+        }
+        .chip:active {
+            opacity: 0.7;
+        }
+        /* 滑块 */
+        input[type=range] {
+            flex: 1;
+            min-width: 100px;
+            accent-color: #4fc3f7;
+        }
+        .val {
+            color: #ffd54f;
+            font-size: 13px;
+            min-width: 38px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        /* 开关 */
+        .switch {
+            position: relative;
+            width: 42px;
+            height: 24px;
+            background: #2d2d44;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .switch::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .switch.on {
+            background: #388e3c;
+        }
+        .switch.on::after {
+            left: 20px;
+        }
+        /* 卡片 */
         .card {
             background: #24243b;
             border-radius: 12px;
-            padding: 25px;
-            min-height: 320px;
-            margin-bottom: 25px;
+            padding: 22px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .star-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            color: #555;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .star-btn.on {
+            color: #ffb300;
+            text-shadow: 0 0 8px rgba(255,179,0,0.6);
+        }
+        .group-tag {
+            display: inline-block;
+            font-size: 11px;
+            color: #4fc3f7;
+            background: rgba(79,195,247,0.12);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .eng-text, .cn-text {
+            line-height: 1.8;
+            margin-bottom: 18px;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
         .eng-text {
-            font-size: 20px;
-            line-height: 1.7;
+            font-size: 19px;
             color: #81d4fa;
-            margin-bottom: 20px;
         }
         .cn-text {
-            font-size: 18px;
-            line-height: 1.7;
+            font-size: 17px;
             color: #ffd54f;
-            margin-bottom: 30px;
         }
+        .token {
+            display: inline;
+            padding: 0 2px;
+            border-radius: 3px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .token.active {
+            background: #ffb300;
+            color: #1a1a2e;
+            box-shadow: 0 0 6px rgba(255,179,0,0.5);
+        }
+        /* 进度条 */
+        .progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #2d2d44;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4fc3f7, #0288d1);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 12px;
+            color: #888;
+            min-width: 70px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        /* 按钮 */
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         button {
             flex: 1;
-            min-width: 120px;
-            padding: 14px;
+            min-width: 100px;
+            padding: 13px 8px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             transition: 0.2s;
-        }
-        .read-btn {
-            background: #0288d1;
-            color: white;
-        }
-        .prev-btn {
-            background: #388e3c;
-            color: white;
-        }
-        .next-btn {
-            background: #f57c00;
-            color: white;
+            color: #fff;
         }
         button:active {
-            opacity: 0.7;
+            transform: scale(0.97);
+            opacity: 0.85;
         }
+        .read-btn { background: #0288d1; }
+        .prev-btn { background: #388e3c; }
+        .next-btn { background: #f57c00; }
+        .auto-btn { background: #6a1b9a; }
+        .auto-btn.on { background: #ff5252; }
         .page-num {
             text-align: center;
-            margin-top: 15px;
-            color: #bbb;
+            margin-top: 12px;
+            color: #888;
+            font-size: 12px;
         }
         .voice-tip {
             color: #ff8888;
             text-align: center;
-            margin: 10px 0;
-            font-size: 14px;
+            margin: 6px 0 14px;
+            font-size: 13px;
+            min-height: 18px;
+        }
+        .countdown {
+            color: #ffd54f;
+            font-weight: 600;
+        }
+        @media (min-width: 600px) {
+            .eng-text { font-size: 21px; }
+            .cn-text { font-size: 19px; }
+            .title { font-size: 26px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1 class="title">Floor Operation 中英文对照学习</h1>
-        <p class="tip">点击发音朗读，支持上一句/下一句/下拉快速跳转</p>
+        <p class="tip">点星收藏 · 滑动调速 · 自动循环 · 跟读高亮</p>
     </div>
+
+    <div class="control-bar">
+        <div class="row">
+            <span class="row-label">语速</span>
+            <input type="range" id="rateRange" min="0.5" max="1.5" step="0.05" value="0.7">
+            <span class="val" id="rateVal">0.70x</span>
+        </div>
+        <div class="row">
+            <span class="row-label">自动</span>
+            <div class="switch" id="autoSwitch"></div>
+            <span class="val" id="autoLabel">关闭</span>
+            <span class="row-label" style="min-width:auto;">间隔</span>
+            <input type="range" id="intervalRange" min="1" max="10" step="1" value="3">
+            <span class="val" id="intervalVal">3s</span>
+        </div>
+        <div class="row">
+            <span class="row-label">收藏</span>
+            <span class="chip" id="favFilterChip">仅看收藏</span>
+            <span class="val" id="favCount">0 项</span>
+        </div>
+    </div>
+
     <div class="voice-tip" id="voiceTip"></div>
-    <select id="jumpSelect" class="select-box"></select>
 
     <div class="card">
+        <button class="star-btn" id="starBtn" title="收藏">☆</button>
+        <span class="group-tag" id="groupTag"></span>
         <div class="eng-text" id="engContent"></div>
         <div class="cn-text" id="cnContent"></div>
         <div class="btn-group">
-            <button class="read-btn" id="readBtn">🔊 朗读英文发音</button>
-            <button class="prev-btn" id="prevBtn">⬅ 上一格</button>
-            <button class="next-btn" id="nextBtn">下一格 ➡</button>
+            <button class="read-btn" id="readBtn">🔊 朗读</button>
+            <button class="prev-btn" id="prevBtn">⬅ 上一句</button>
+            <button class="next-btn" id="nextBtn">下一句 ➡</button>
         </div>
         <div class="page-num" id="pageInfo"></div>
     </div>
 
+    <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+        <span class="progress-text" id="progressText">0 / 0</span>
+    </div>
+
+    <select id="jumpSelect" class="select-box" style="width:100%;padding:12px;font-size:15px;border-radius:8px;border:none;background:#2d2d44;color:#fff;"></select>
+
 <script>
-// 全部文本库：英文 + 中文翻译
-const wordList = [
-    {eng: "Floor Operation",cn: "楼层运营"},
-    {eng: "1 Gaming Floor",cn: "1 娱乐场楼层（博彩区）"},
-    {eng: "a) Pit and table Games & Slot area and Games",cn: "a) 赌台区域、桌上游戏及老虎机区域"},
-    {eng: "b) F&B Outlets (under Sands China Ltd.)",cn: "b) 餐饮门店（隶属于金沙中国有限公司）"},
-    {eng: "LON : Crystal Jade, North Palace, TimHoWan, Paiza Club Dining",cn: "伦敦人：翡翠拉面小笼包、北宫、添好运、御匾会会员餐厅"},
-    {eng: "LG : Chelsea Garden, Hampton Court",cn: "伦敦人金光大道：切尔西花园、汉普顿阁"},
-    {eng: "VE : Imperial house DS, Red Dragon noodles, Paiza Dining, Jiangnan, Hiro, 鑽匯dining.",cn: "威尼斯人：帝皇点心、红龙面家、御匾餐厅、江南、Hiro、钻汇餐厅"},
-    {eng: "PA : Market Bistro & Paiza Dining",cn: "御匾豪园：市集小馆 & 御匾餐厅"},
-    {eng: "ST:Moonlight",cn: "圣瑞吉：月光餐厅"},
-    {eng: "FS:Ping",cn: "四季酒店：Ping餐厅"},
-    {eng: "c) Location of Operation – Counter / Gaming",cn: "c) 运营点位——柜台/博彩区服务台"},
-    {eng: "d) Other facilities (Toilet, cage, pay phone, dining area, security, TITO machine)",cn: "d) 其他设施（洗手间、筹码房、公用电话、用餐区、安保、TITO筹码兑换机）"},
-    {eng: "e) Smoking rooms locations near non-smoking gaming area",cn: "e) 非吸烟博彩区周边吸烟室位置"},
-    {eng: "2 Non-Gaming Floor",cn: "2 非博彩楼层"},
-    {eng: "a) F&B Outlets",cn: "a) 餐饮门店"},
-    {eng: "SANDS – Copa, Golden Court, Garden Nine Restaurant, 888 buffet & foodcourt",cn: "金沙酒店：Copa、金阁、九庭餐厅、888自助及美食广场"},
-    {eng: "VE–North, Pin Yue Xuan",cn: "威尼斯人：北方馆、品粤轩"},
-    {eng: "VE Outlet–TaiYi, Marmelreira Seafood, Haidilao, EDO, Lei Garden, Taihing, Mcsorleys",cn: "威尼斯人商铺：泰一、马美利亚海鲜、海底捞、EDO、利苑、太兴、麦斯利酒吧"},
-    {eng: "FS -- ZiYat Heen, Belcancao, Xiao Ting, Vista 38, Ote The Study",cn: "四季酒店：紫逸轩、Belcancao、小庭、38观景餐厅、Ote书房餐吧"},
-    {eng: "LON & LG– North Palace, TimHoWan, Churchill’s Table, TaiEr, Hai Di Lao, Jin Yue Xuan, HipSeng, The Conservatory, The Manor, the St. Regis Bar, Chiado, The Huayang Garden, The Residence, Crystal Jade, The Kensington, The Mews, Gordon Ramsay Pub & Grill, Chelsea Garden, Hampton Court",cn: "伦敦人及金光大道：北宫、添好运、丘吉尔餐桌、泰尔、海底捞、金悦轩、协成、温室花园、庄园餐厅、瑞吉酒吧、希雅度、华洋花园、府邸餐厅、翡翠拉面、肯辛顿、马厩餐吧、戈登拉姆齐烧烤酒馆、切尔西花园、汉普顿阁"},
-    {eng: "PA– Paiza Dining, Le Buffet, Crystal Jade, Brasserie, Lotus Palace, La Chine, Pool Café, Le Sourire, Emerald House",cn: "御匾豪园：御匾餐厅、自助餐厅、翡翠、法式小馆、莲宫、La Chine、泳池咖啡、微笑餐厅、翠玉轩"},
-    {eng: "b) Entertainment:",cn: "b) 娱乐设施："},
-    {eng: "VE - teamLab, Indoor Gondola Ride, Outdoor Gondola Ride, theater, Cotai Arena",cn: "威尼斯人：数字艺术馆、室内贡多拉船、室外贡多拉船、剧场、金光综艺馆"},
-    {eng: "LON&LG - Londoner Moments, Check-in points, Theater Arena",cn: "伦敦人及金光大道：伦敦时光打卡点、入住办理点、剧场场馆"},
-    {eng: "c) Service Counters (Business Center, CTL, Front Desk, Concierge, Box Office, Ferry, Limo drop off point, shuttle bus pick up/drop off point)",cn: "c) 服务柜台（商务中心、客户服务专线、前台、礼宾部、票务处、渡轮服务、轿车落客点、穿梭巴士上下客点）"},
-    {eng: "Common use contact - LG",cn: "通用联络电话 - 伦敦人金光大道"},
-    {eng: "Londoner Duty: LO Main Duty - 66182121, LO Duty - 66182112, Slot Duty - 63350099, HHL Manager duty-62381966",cn: "伦敦人值班：伦敦人主值班、伦敦人值班、老虎机值班、高层经理值班电话"},
-    {eng: "LC APEX Duty - 62381963, L3 APEX Duty - 63926555, Foreign Pit 937 Duty - 63027002",cn: "伦敦人APEX值班、三楼APEX值班、937国际赌台值班电话"},
-    {eng: "Counter: LON Casino Main Counter - 37341/37392, Apex Counter-38886",cn: "柜台：伦敦人娱乐场主柜台、APEX柜台分机"},
-    {eng: "Londoner Grand :",cn: "伦敦人御匾汇："},
-    {eng: "Duty: LG L01 Main Duty - 66833105, LG L01 Floor Duty - 63261587, LG APEX Duty - 66637202",cn: "值班：金光大道L01主值班、L01楼层值班、APEX值班电话"},
-    {eng: "Counter: LG L01 Main Counter - 81139622",cn: "柜台：金光大道L01主柜台电话"},
-    {eng: "Share Service: VE, LO, LG, PA & Sands - 81181002, FS - 81181408 or 63005198",cn: "共享服务：威尼斯人、伦敦人、金光大道、御匾、金沙共用热线；四季酒店专线"},
-    {eng: "VE Outsource - 81185400, VE(standby) 81185340, FS Limo Counter - 81185416, 66798313 (10:30am -11:30pm)",cn: "威尼斯人外包服务、威尼斯人后备值班、四季轿车柜台（服务时段早上10:30至晚上11:30）"},
-    {eng: "LON-(pre-book) 81136400, 62663078, Limo (standby) 81135127/62381998/ 62663076",cn: "伦敦人预约专线、轿车后备值班电话"},
-    {eng: "PA-FS(standby)81181323/ 63356663, LG APEX Umo Counter - 62663076, LG Paiza Grand Umo Counter 66728053",cn: "御匾/四季后备值班、金光大道APEX礼宾柜台、金光大道御匾汇礼宾柜台"},
-    {eng: "FS(standby) 81115400, PA(standby) 65550214, LG APEX - 66182193",cn: "四季后备值班、御匾后备值班、金光大道APEX专线"},
-    {eng: "Security: 81135999 /66816724 (For tips)",cn: "安保部热线（用于上报小费相关事宜）"},
-    {eng: "IT-81183210, Facilities - 81138400, Housekeeping (Public Area) - 66182193, (LON) 811-35999",cn: "信息技术部、设施部、公共区域客房部、伦敦人客房部热线"},
-    {eng: "Hunter, Surveillance - 81138000, Fire & Emergency 811-84999, Emergency Hotline (24hrs)",cn: "监控安保部、消防及紧急事故24小时热线"},
-    {eng: "CTL - 81135888 (24hrs)",cn: "客户服务专线（24小时）"},
-    {eng: "LG Service Support Duty - 66834463, Sales Support - 81182075",cn: "金光大道服务支援值班、销售支援热线"},
-    {eng: "Maintenance Service: MIA - 66798326/ MFT - 66798328/ TFX - 66798329",cn: "维修保养服务：不同维修班组专线"},
-    {eng: "Welcome Service: Londoner - 81139100, Londoner Court-81136668, Londoner Grand - 81130333, Paiza Grand - 81130352",cn: "迎宾服务：伦敦人、伦敦人庭院、伦敦人御匾汇、御匾豪园迎宾热线"},
-    {eng: "Front Office: Londoner - 81139100, Londoner Court-81136668, Venetian - 81185800, Four Seasons - 81128200",cn: "前台服务：伦敦人、伦敦人庭院、威尼斯人、四季酒店前台电话"},
-    {eng: "Conard - 81136208, St. Regis - 81134914, Sands - 811831D1/ 81183102",cn: "康莱德、瑞吉酒店、金沙酒店前台分机"},
-    {eng: "Paiza - 81115400",cn: "御匾专属热线"},
-    {eng: "Hotlines: Sands - 28833330, Venetian - 28828888, Four Seasons - 28818888, Londoner- 28868888, Londoner Court - 28868888",cn: "总机热线：金沙、威尼斯人、四季、伦敦人、伦敦人庭院总机号码"},
-    {eng: "Londoner Grand & Paiza Grand- 28802000, Conard - 28829000, St. Regis -28828898",cn: "伦敦人御匾汇&御匾豪园、康莱德、瑞吉酒店总机"},
-    {eng: "Knowing the executive",cn: "管理层组织架构"},
-    {eng: "1 Department O-Chart & Company O-Chart",cn: "1 部门组织架构图 & 集团组织架构图"}
+// ===================== 1. 數據：詞條帶分組與 id =====================
+const GROUPS = {
+    gaming: "Gaming Floor",
+    fb:     "F&B Outlets",
+    hot:    "Hotlines",
+    org:    "組織架構"
+};
+// 預設全部為未收藏
+const RAW = [
+    // —— Gaming Floor ——
+    ["gaming", "Floor Operation", "楼层运营"],
+    ["gaming", "1 Gaming Floor", "1 娱乐场楼层（博彩区）"],
+    ["gaming", "a) Pit and table Games & Slot area and Games", "a) 赌台区域、桌上游戏及老虎机区域"],
+    ["gaming", "b) F&B Outlets (under Sands China Ltd.)", "b) 餐饮门店（隶属于金沙中国有限公司）"],
+    ["gaming", "LON : Crystal Jade, North Palace, TimHoWan, Paiza Club Dining", "伦敦人：翡翠拉面小笼包、北宫、添好运、御匾会会员餐厅"],
+    ["gaming", "LG : Chelsea Garden, Hampton Court", "伦敦人金光大道：切尔西花园、汉普顿阁"],
+    ["gaming", "VE : Imperial house DS, Red Dragon noodles, Paiza Dining, Jiangnan, Hiro, 鑽匯dining.", "威尼斯人：帝皇点心、红龙面家、御匾餐厅、江南、Hiro、钻汇餐厅"],
+    ["gaming", "PA : Market Bistro & Paiza Dining", "御匾豪园：市集小馆 & 御匾餐厅"],
+    ["gaming", "ST:Moonlight", "圣瑞吉：月光餐厅"],
+    ["gaming", "FS:Ping", "四季酒店：Ping餐厅"],
+    ["gaming", "c) Location of Operation – Counter / Gaming", "c) 运营点位——柜台/博彩区服务台"],
+    ["gaming", "d) Other facilities (Toilet, cage, pay phone, dining area, security, TITO machine)", "d) 其他设施（洗手间、筹码房、公用电话、用餐区、安保、TITO筹码兑换机）"],
+    ["gaming", "e) Smoking rooms locations near non-smoking gaming area", "e) 非吸烟博彩区周边吸烟室位置"],
+    // —— F&B Outlets ——
+    ["fb", "2 Non-Gaming Floor", "2 非博彩楼层"],
+    ["fb", "SANDS – Copa, Golden Court, Garden Nine Restaurant, 888 buffet & foodcourt", "金沙酒店：Copa、金阁、九庭餐厅、888自助及美食广场"],
+    ["fb", "VE–North, Pin Yue Xuan", "威尼斯人：北方馆、品粤轩"],
+    ["fb", "VE Outlet–TaiYi, Marmelreira Seafood, Haidilao, EDO, Lei Garden, Taihing, Mcsorleys", "威尼斯人商铺：泰一、马美利亚海鲜、海底捞、EDO、利苑、太兴、麦斯利酒吧"],
+    ["fb", "FS -- ZiYat Heen, Belcancao, Xiao Ting, Vista 38, Ote The Study", "四季酒店：紫逸轩、Belcancao、小庭、38观景餐厅、Ote书房餐吧"],
+    ["fb", "LON & LG– North Palace, TimHoWan, Churchill's Table, TaiEr, Hai Di Lao, Jin Yue Xuan, HipSeng, The Conservatory, The Manor, the St. Regis Bar, Chiado, The Huayang Garden, The Residence, Crystal Jade, The Kensington, The Mews, Gordon Ramsay Pub & Grill, Chelsea Garden, Hampton Court", "伦敦人及金光大道：北宫、添好运、丘吉尔餐桌、泰尔、海底捞、金悦轩、协成、温室花园、庄园餐厅、瑞吉酒吧、希雅度、华洋花园、府邸餐厅、翡翠拉面、肯辛顿、马厩餐吧、戈登拉姆齐烧烤酒馆、切尔西花园、汉普顿阁"],
+    ["fb", "PA– Paiza Dining, Le Buffet, Crystal Jade, Brasserie, Lotus Palace, La Chine, Pool Café, Le Sourire, Emerald House", "御匾豪园：御匾餐厅、自助餐厅、翡翠、法式小馆、莲宫、La Chine、泳池咖啡、微笑餐厅、翠玉轩"],
+    ["fb", "VE - teamLab, Indoor Gondola Ride, Outdoor Gondola Ride, theater, Cotai Arena", "威尼斯人：数字艺术馆、室内贡多拉船、室外贡多拉船、剧场、金光综艺馆"],
+    ["fb", "LON&LG - Londoner Moments, Check-in points, Theater Arena", "伦敦人及金光大道：伦敦时光打卡点、入住办理点、剧场场馆"],
+    ["fb", "Service Counters (Business Center, CTL, Front Desk, Concierge, Box Office, Ferry, Limo drop off point, shuttle bus pick up/drop off point)", "服务柜台（商务中心、客户服务专线、前台、礼宾部、票务处、渡轮服务、轿车落客点、穿梭巴士上下客点）"],
+    // —— Hotlines ——
+    ["hot", "Common use contact - LG", "通用联络电话 - 伦敦人金光大道"],
+    ["hot", "Londoner Duty: LO Main Duty - 66182121, LO Duty - 66182112, Slot Duty - 63350099, HHL Manager duty-62381966", "伦敦人值班：伦敦人主值班、伦敦人值班、老虎机值班、高层经理值班电话"],
+    ["hot", "LC APEX Duty - 62381963, L3 APEX Duty - 63926555, Foreign Pit 937 Duty - 63027002", "伦敦人APEX值班、三楼APEX值班、937国际赌台值班电话"],
+    ["hot", "Counter: LON Casino Main Counter - 37341/37392, Apex Counter-38886", "柜台：伦敦人娱乐场主柜台、APEX柜台分机"],
+    ["hot", "Londoner Grand :", "伦敦人御匾汇："],
+    ["hot", "Duty: LG L01 Main Duty - 66833105, LG L01 Floor Duty - 63261587, LG APEX Duty - 66637202", "值班：金光大道L01主值班、L01楼层值班、APEX值班电话"],
+    ["hot", "Counter: LG L01 Main Counter - 81139622", "柜台：金光大道L01主柜台电话"],
+    ["hot", "Share Service: VE, LO, LG, PA & Sands - 81181002, FS - 81181408 or 63005198", "共享服务：威尼斯人、伦敦人、金光大道、御匾、金沙共用热线；四季酒店专线"],
+    ["hot", "VE Outsource - 81185400, VE(standby) 81185340, FS Limo Counter - 81185416, 66798313 (10:30am -11:30pm)", "威尼斯人外包服务、威尼斯人后备值班、四季轿车柜台（服务时段早上10:30至晚上11:30）"],
+    ["hot", "LON-(pre-book) 81136400, 62663078, Limo (standby) 81135127/62381998/ 62663076", "伦敦人预约专线、轿车后备值班电话"],
+    ["hot", "PA-FS(standby)81181323/ 63356663, LG APEX Umo Counter - 62663076, LG Paiza Grand Umo Counter 66728053", "御匾/四季后备值班、金光大道APEX礼宾柜台、金光大道御匾汇礼宾柜台"],
+    ["hot", "FS(standby) 81115400, PA(standby) 65550214, LG APEX - 66182193", "四季后备值班、御匾后备值班、金光大道APEX专线"],
+    ["hot", "Security: 81135999 /66816724 (For tips)", "安保部热线（用于上报小费相关事宜）"],
+    ["hot", "IT-81183210, Facilities - 81138400, Housekeeping (Public Area) - 66182193, (LON) 811-35999", "信息技术部、设施部、公共区域客房部、伦敦人客房部热线"],
+    ["hot", "Hunter, Surveillance - 81138000, Fire & Emergency 811-84999, Emergency Hotline (24hrs)", "监控安保部、消防及紧急事故24小时热线"],
+    ["hot", "CTL - 81135888 (24hrs)", "客户服务专线（24小时）"],
+    ["hot", "LG Service Support Duty - 66834463, Sales Support - 81182075", "金光大道服务支援值班、销售支援热线"],
+    ["hot", "Maintenance Service: MIA - 66798326/ MFT - 66798328/ TFX - 66798329", "维修保养服务：不同维修班组专线"],
+    ["hot", "Welcome Service: Londoner - 81139100, Londoner Court-81136668, Londoner Grand - 81130333, Paiza Grand - 81130352", "迎宾服务：伦敦人、伦敦人庭院、伦敦人御匾汇、御匾豪园迎宾热线"],
+    ["hot", "Front Office: Londoner - 81139100, Londoner Court-81136668, Venetian - 81185800, Four Seasons - 81128200", "前台服务：伦敦人、伦敦人庭院、威尼斯人、四季酒店前台电话"],
+    ["hot", "Conard - 81136208, St. Regis - 81134914, Sands - 811831D1/ 81183102", "康莱德、瑞吉酒店、金沙酒店前台分机"],
+    ["hot", "Paiza - 81115400", "御匾专属热线"],
+    ["hot", "Hotlines: Sands - 28833330, Venetian - 28828888, Four Seasons - 28818888, Londoner- 28868888, Londoner Court - 28868888", "总机热线：金沙、威尼斯人、四季、伦敦人、伦敦人庭院总机号码"],
+    ["hot", "Londoner Grand & Paiza Grand- 28802000, Conard - 28829000, St. Regis -28828898", "伦敦人御匾汇&御匾豪园、康莱德、瑞吉酒店总机"],
+    // —— 組織架構 ——
+    ["org", "Knowing the executive", "管理层组织架构"],
+    ["org", "1 Department O-Chart & Company O-Chart", "1 部门组织架构图 & 集团组织架构图"]
 ];
 
-let currentIndex = 0;
-const engDom = document.getElementById("engContent");
-const cnDom = document.getElementById("cnContent");
-const pageInfoDom = document.getElementById("pageInfo");
-const jumpSelect = document.getElementById("jumpSelect");
-const readBtn = document.getElementById("readBtn");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const voiceTip = document.getElementById("voiceTip");
+// 加 id 與默認 favorite=false
+const wordList = RAW.map((r, i) => ({ id: i, group: r[0], eng: r[1], cn: r[2], favorite: false }));
 
-// 初始化下拉框
-function initSelect() {
+// ===================== 2. 持久化：localStorage =====================
+const STORAGE_KEY = "floor-op-state-v1";
+const State = {
+    favorites: new Set(),
+    currentId: wordList[0].id,
+    rate: 0.7,
+    autoPlay: false,
+    autoInterval: 3,
+    favFilter: false
+};
+function saveState() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            favorites: [...State.favorites],
+            currentId: State.currentId,
+            rate: State.rate,
+            autoPlay: State.autoPlay,
+            autoInterval: State.autoInterval,
+            favFilter: State.favFilter
+        }));
+    } catch(e) { /* 忽略 quota */ }
+}
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        if (Array.isArray(s.favorites)) State.favorites = new Set(s.favorites);
+        if (typeof s.currentId === "number") State.currentId = s.currentId;
+        if (typeof s.rate === "number") State.rate = s.rate;
+        if (typeof s.autoPlay === "boolean") State.autoPlay = s.autoPlay;
+        if (typeof s.autoInterval === "number") State.autoInterval = s.autoInterval;
+        if (typeof s.favFilter === "boolean") State.favFilter = s.favFilter;
+        wordList.forEach(w => { if (State.favorites.has(w.id)) w.favorite = true; });
+    } catch(e) { /* 默認值即可 */ }
+}
+
+// ===================== 3. 視圖列表（支援僅收藏） =====================
+function viewList() {
+    return State.favFilter ? wordList.filter(w => w.favorite) : wordList;
+}
+function viewIndex() {
+    const list = viewList();
+    const idx = list.findIndex(w => w.id === State.currentId);
+    return { list, idx };
+}
+
+// ===================== 4. DOM =====================
+const $ = id => document.getElementById(id);
+const engDom = $("engContent");
+const cnDom = $("cnContent");
+const pageInfoDom = $("pageInfo");
+const jumpSelect = $("jumpSelect");
+const readBtn = $("readBtn");
+const prevBtn = $("prevBtn");
+const nextBtn = $("nextBtn");
+const voiceTip = $("voiceTip");
+const starBtn = $("starBtn");
+const groupTag = $("groupTag");
+const rateRange = $("rateRange");
+const rateVal = $("rateVal");
+const autoSwitch = $("autoSwitch");
+const autoLabel = $("autoLabel");
+const intervalRange = $("intervalRange");
+const intervalVal = $("intervalVal");
+const favFilterChip = $("favFilterChip");
+const favCount = $("favCount");
+const progressBar = $("progressBar");
+const progressFill = $("progressFill");
+const progressText = $("progressText");
+
+// ===================== 5. 渲染 =====================
+function escapeHTML(s) {
+    return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+function tokenizeEn(text) {
+    // 保留分隔符（空格、标点）以便 reassemble
+    const parts = text.split(/(\s+|[,.;:!?()\[\]"'/&-])/);
+    return parts.filter(p => p.length > 0);
+}
+function render() {
+    const { list, idx } = viewIndex();
+    if (list.length === 0) {
+        engDom.textContent = "（没有收藏的句子）";
+        cnDom.textContent = "请先添加收藏 ☆";
+        pageInfoDom.textContent = "";
+        starBtn.textContent = "☆"; starBtn.classList.remove("on");
+        progressText.textContent = "0 / 0";
+        progressFill.style.width = "0%";
+        return;
+    }
+    const w = list[idx < 0 ? 0 : idx];
+    if (idx < 0) State.currentId = w.id;
+    // 英文：词组切分
+    engDom.innerHTML = tokenizeEn(w.eng).map(t => {
+        if (/^\s+$/.test(t) || /^[,.;:!?()\[\]"'/&\-]$/.test(t)) {
+            return `<span>${escapeHTML(t)}</span>`;
+        }
+        return `<span class="token" data-tok>${escapeHTML(t)}</span>`;
+    }).join("");
+    cnDom.textContent = w.cn;
+    pageInfoDom.textContent = `第 ${idx + 1} 句`;
+    starBtn.textContent = w.favorite ? "★" : "☆";
+    starBtn.classList.toggle("on", w.favorite);
+    groupTag.textContent = GROUPS[w.group] || "";
+    // 进度
+    const total = list.length;
+    progressText.textContent = `${idx + 1} / ${total}`;
+    progressFill.style.width = `${((idx + 1) / total) * 100}%`;
+    // 同步下拉
+    jumpSelect.value = String(w.id);
+    // 收藏计数
+    favCount.textContent = `${State.favorites.size} 项`;
+}
+
+function rebuildSelect() {
     jumpSelect.innerHTML = "";
-    wordList.forEach((item, idx) => {
+    const list = viewList();
+    if (list.length === 0) {
         const opt = document.createElement("option");
-        opt.value = idx;
-        opt.textContent = `第${idx+1}句：${item.eng.slice(0,30)}...`;
+        opt.textContent = "（无条目）"; opt.value = "-1";
+        jumpSelect.appendChild(opt);
+        return;
+    }
+    list.forEach((w, i) => {
+        const opt = document.createElement("option");
+        opt.value = String(w.id);
+        const head = w.eng.length > 28 ? w.eng.slice(0, 28) + "…" : w.eng;
+        opt.textContent = `${i + 1}. ${head}`;
         jumpSelect.appendChild(opt);
     });
 }
 
-// 渲染当前内容
-function render() {
-    const item = wordList[currentIndex];
-    engDom.textContent = item.eng;
-    cnDom.textContent = item.cn;
-    pageInfoDom.textContent = `当前：${currentIndex + 1} / 总 ${wordList.length} 句`;
-    jumpSelect.value = currentIndex;
+// ===================== 6. 朗讀引擎（跟讀高亮） =====================
+let currentUtter = null;
+let autoPlayTimer = null;
+let countdownTimer = null;
+
+function cancelTimers() {
+    if (autoPlayTimer) { clearTimeout(autoPlayTimer); autoPlayTimer = null; }
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
 }
 
-// 修复朗读函数：等待语音加载、清除旧朗读、捕获错误
-function speakEng() {
-    voiceTip.textContent = "";
-    // 停止正在朗读的语音
-    speechSynthesis.cancel();
-    const text = wordList[currentIndex].eng;
-    // 判断浏览器是否支持语音
-    if (!window.speechSynthesis) {
-        voiceTip.textContent = "❌ 当前浏览器不支持语音朗读，请更换Chrome/Edge";
-        return;
-    }
-    // 等待语音包加载完成
-    function doSpeak() {
+function clearHighlight(scope) {
+    scope.querySelectorAll(".token.active").forEach(el => el.classList.remove("active"));
+}
+
+function speak(text, lang, opts = {}) {
+    return new Promise((resolve) => {
+        if (!("speechSynthesis" in window)) {
+            voiceTip.textContent = "❌ 当前浏览器不支持语音朗读";
+            resolve("unsupported");
+            return;
+        }
+        speechSynthesis.cancel();
+        cancelTimers();
         const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "en-US";
-        utter.rate = 0.7; // 语速放慢，听得更清楚
+        utter.lang = lang;
+        utter.rate = State.rate;
         utter.pitch = 1;
-        // 朗读完成提示
+        currentUtter = utter;
+        // 跟读高亮（仅英文）
+        if (lang.startsWith("en") && opts.highlight) {
+            const tokens = [...engDom.querySelectorAll(".token")];
+            const full = tokenizeEn(text);
+            // 预计算每个 token 的 charIndex 起止
+            const ranges = [];
+            let pos = 0;
+            full.forEach(t => {
+                if (/^\s+$/.test(t) || /^[,.;:!?()\[\]"'/&\-]$/.test(t)) {
+                    pos += t.length;
+                } else {
+                    ranges.push({ start: pos, end: pos + t.length });
+                    pos += t.length;
+                }
+            });
+            utter.onboundary = (e) => {
+                if (e.name && e.name !== "word") return;
+                const ci = e.charIndex;
+                clearHighlight(engDom);
+                for (let i = 0; i < ranges.length; i++) {
+                    if (ci >= ranges[i].start && ci < ranges[i].end) {
+                        const el = tokens[i];
+                        if (el) {
+                            el.classList.add("active");
+                            // 自动滚动到可视区
+                            const rect = el.getBoundingClientRect();
+                            if (rect.top < 80 || rect.bottom > window.innerHeight - 80) {
+                                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                            }
+                        }
+                        break;
+                    }
+                }
+            };
+        }
         utter.onend = () => {
-            voiceTip.textContent = "✅ 朗读完成";
+            clearHighlight(engDom);
+            currentUtter = null;
+            resolve("end");
         };
-        // 朗读失败捕获
         utter.onerror = (err) => {
-            voiceTip.textContent = "❌ 朗读失败：" + err.error + "，请打开系统语音权限";
+            // iOS 某些情况下 cancel 后会触发 error，无需提示
+            if (err.error === "canceled" || err.error === "interrupted") {
+                resolve("cancel");
+            } else {
+                voiceTip.textContent = "❌ 朗读失败：" + (err.error || "");
+                resolve("error");
+            }
         };
         speechSynthesis.speak(utter);
+    });
+}
+
+async function playCurrent() {
+    const { list, idx } = viewIndex();
+    if (list.length === 0) return;
+    const w = list[idx < 0 ? 0 : idx];
+    voiceTip.textContent = "🔊 朗读中…";
+    const res = await speak(w.eng, "en-US", { highlight: true });
+    if (res === "end") {
+        voiceTip.textContent = State.autoPlay ? "" : "✅ 朗读完成";
+        if (State.autoPlay) scheduleNext();
+    } else if (res === "cancel") {
+        voiceTip.textContent = "";
     }
-    // 加载语音列表
-    let voices = speechSynthesis.getVoices();
-    if (voices.length === 0) {
-        speechSynthesis.onvoiceschanged = () => {
-            voices = speechSynthesis.getVoices();
-            doSpeak();
+}
+
+function scheduleNext() {
+    cancelTimers();
+    let remaining = State.autoInterval;
+    voiceTip.innerHTML = `⏭ <span class="countdown" id="cd">${remaining}</span> 秒后下一句…`;
+    countdownTimer = setInterval(() => {
+        remaining--;
+        const el = document.getElementById("cd");
+        if (el) el.textContent = remaining;
+        if (remaining <= 0) {
+            cancelTimers();
+            goNext(true);
         }
-    } else {
-        doSpeak();
-    }
+    }, 1000);
+    autoPlayTimer = setTimeout(() => {
+        cancelTimers();
+        goNext(true);
+    }, State.autoInterval * 1000);
 }
 
-// 上一句
-function prev() {
-    if(currentIndex > 0) {
-        currentIndex--;
-        render();
-        speechSynthesis.cancel();
-        voiceTip.textContent = "";
-    }
-}
-
-// 下一句
-function next() {
-    if(currentIndex < wordList.length -1) {
-        currentIndex++;
-        render();
-        speechSynthesis.cancel();
-        voiceTip.textContent = "";
-    }
-}
-
-// 跳转选择
-jumpSelect.addEventListener("change", (e)=>{
-    currentIndex = parseInt(e.target.value);
-    render();
+function stopAll() {
     speechSynthesis.cancel();
+    cancelTimers();
+    currentUtter = null;
+    clearHighlight(engDom);
     voiceTip.textContent = "";
+}
+
+function goNext(auto = false) {
+    const { list, idx } = viewIndex();
+    if (list.length === 0) return;
+    if (idx < list.length - 1) {
+        State.currentId = list[idx + 1].id;
+    } else {
+        // 末尾回到首句
+        State.currentId = list[0].id;
+        if (auto) voiceTip.textContent = "🔁 已循环到首句";
+    }
+    saveState();
+    render();
+    if (auto && State.autoPlay) playCurrent();
+}
+function goPrev() {
+    const { list, idx } = viewIndex();
+    if (list.length === 0) return;
+    if (idx > 0) State.currentId = list[idx - 1].id;
+    else State.currentId = list[list.length - 1].id;
+    saveState();
+    render();
+}
+
+// ===================== 7. 事件綁定 =====================
+readBtn.addEventListener("click", () => {
+    if (State.autoPlay && currentUtter) {
+        // 自动播放中点朗读 = 停止
+        State.autoPlay = false;
+        updateAutoUI();
+        stopAll();
+        saveState();
+    } else {
+        playCurrent();
+    }
+});
+prevBtn.addEventListener("click", () => { stopAll(); goPrev(); });
+nextBtn.addEventListener("click", () => { stopAll(); goNext(false); });
+
+jumpSelect.addEventListener("change", (e) => {
+    const id = parseInt(e.target.value);
+    if (!isNaN(id) && id >= 0) {
+        State.currentId = id;
+        stopAll();
+        saveState();
+        render();
+    }
 });
 
-// 按钮绑定
-readBtn.addEventListener("click", speakEng);
-prevBtn.addEventListener("click", prev);
-nextBtn.addEventListener("click", next);
+// 语速
+rateRange.addEventListener("input", () => {
+    State.rate = parseFloat(rateRange.value);
+    rateVal.textContent = State.rate.toFixed(2) + "x";
+    saveState();
+});
 
-// 页面初始化
-initSelect();
+// 自动播放开关
+function updateAutoUI() {
+    autoSwitch.classList.toggle("on", State.autoPlay);
+    autoLabel.textContent = State.autoPlay ? "开启" : "关闭";
+    readBtn.textContent = State.autoPlay && currentUtter ? "⏹ 停止" : "🔊 朗读";
+}
+autoSwitch.addEventListener("click", () => {
+    State.autoPlay = !State.autoPlay;
+    updateAutoUI();
+    saveState();
+    if (State.autoPlay) {
+        playCurrent();
+    } else {
+        stopAll();
+    }
+});
+intervalRange.addEventListener("input", () => {
+    State.autoInterval = parseInt(intervalRange.value);
+    intervalVal.textContent = State.autoInterval + "s";
+    saveState();
+});
+
+// 收藏筛选
+favFilterChip.addEventListener("click", () => {
+    State.favFilter = !State.favFilter;
+    favFilterChip.classList.toggle("active", State.favFilter);
+    rebuildSelect();
+    render();
+    saveState();
+});
+
+// 收藏星标
+starBtn.addEventListener("click", () => {
+    const w = wordList.find(x => x.id === State.currentId);
+    if (!w) return;
+    w.favorite = !w.favorite;
+    if (w.favorite) State.favorites.add(w.id);
+    else State.favorites.delete(w.id);
+    saveState();
+    render();
+});
+
+// 进度条点击跳转
+progressBar.addEventListener("click", (e) => {
+    const rect = progressBar.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    const list = viewList();
+    if (list.length === 0) return;
+    const target = Math.floor(ratio * list.length);
+    State.currentId = list[Math.min(target, list.length - 1)].id;
+    stopAll();
+    saveState();
+    render();
+});
+
+// 键盘快捷键
+document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+    if (e.key === "ArrowLeft") { stopAll(); goPrev(); }
+    else if (e.key === "ArrowRight") { stopAll(); goNext(false); }
+    else if (e.key === " " || e.key === "Enter") { e.preventDefault(); readBtn.click(); }
+});
+
+// 触摸滑动（左右滑切句）
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+document.addEventListener("touchend", (e) => {
+    if (e.changedTouches.length !== 1) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) { stopAll(); goNext(false); }
+        else { stopAll(); goPrev(); }
+    }
+}, { passive: true });
+
+// ===================== 8. iOS / 後台兼容 =====================
+// 首次进入尝试解锁 voices
+function unlockVoices() {
+    if (!("speechSynthesis" in window)) return;
+    const u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0;
+    u.lang = "en-US";
+    speechSynthesis.speak(u);
+}
+// 页面切回前台时，iOS 可能已暂停合成
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        speechSynthesis.cancel();
+    } else {
+        unlockVoices();
+    }
+});
+
+// ===================== 9. 初始化 =====================
+loadState();
+rebuildSelect();
+// 应用持久化设置
+rateRange.value = State.rate;
+rateVal.textContent = State.rate.toFixed(2) + "x";
+intervalRange.value = State.autoInterval;
+intervalVal.textContent = State.autoInterval + "s";
+favFilterChip.classList.toggle("active", State.favFilter);
+updateAutoUI();
 render();
+unlockVoices();
 
-// 注册 Service Worker（PWA 离线 + 主屏幕体验）
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch((err) => {
-            console.warn('SW 注册失败：', err);
-        });
+// Service Worker
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
     });
 }
 </script>
