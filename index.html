@@ -32,7 +32,7 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .title {
             font-size: 22px;
@@ -46,6 +46,30 @@
         .tip {
             color: #888;
             font-size: 13px;
+        }
+        /* Tab 切換 */
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            background: #24243b;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .tab-bar .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #888;
+            cursor: pointer;
+            transition: 0.2s;
+            background: transparent;
+        }
+        .tab-bar .tab.active {
+            background: #0288d1;
+            color: #fff;
+            font-weight: 600;
         }
         /* 控制栏 */
         .control-bar {
@@ -259,10 +283,90 @@
             color: #ffd54f;
             font-weight: 600;
         }
-        @media (min-width: 600px) {
-            .eng-text { font-size: 21px; }
-            .cn-text { font-size: 19px; }
-            .title { font-size: 26px; }
+        /* 人員組織圖 */
+        .people-section { display: none; }
+        .people-section.active { display: block; }
+        .vocab-section { display: block; }
+        .vocab-section.hidden { display: none; }
+
+        .org-team {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .org-team-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffd54f;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #3a3a5c;
+        }
+        .org-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .org-row.indent-1 { padding-left: 20px; }
+        .org-row.indent-2 { padding-left: 40px; }
+        .org-card {
+            background: #1e1e32;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1 1 auto;
+            border-left: 3px solid #4fc3f7;
+        }
+        .org-card.level-svp { border-left-color: #ff5252; }
+        .org-card.level-vp  { border-left-color: #ffb300; }
+        .org-card.level-avp { border-left-color: #ffb300; }
+        .org-card.level-dir { border-left-color: #4fc3f7; }
+        .org-card.level-ad  { border-left-color: #81c784; }
+        .org-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid #3a3a5c;
+        }
+        .org-info { min-width: 0; }
+        .org-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .org-title {
+            font-size: 12px;
+            color: #4fc3f7;
+        }
+        .org-title-cn {
+            font-size: 11px;
+            color: #aaa;
+        }
+        .org-speak {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            color: #4fc3f7;
+            transition: 0.15s;
+            flex-shrink: 0;
+            margin-left: auto;
+            min-width: auto;
+            flex: none;
+            line-height: 1;
+        }
+        .org-speak:active {
+            background: rgba(79,195,247,0.2);
+            transform: scale(0.9);
         }
     </style>
 </head>
@@ -272,6 +376,12 @@
         <p class="tip">点星收藏 · 滑动调速 · 自动循环 · 跟读高亮</p>
     </div>
 
+    <div class="tab-bar">
+        <div class="tab active" data-tab="vocab">📖 單詞</div>
+        <div class="tab" data-tab="people">👥 人員</div>
+    </div>
+
+    <div class="vocab-section" id="vocabSection">
     <div class="control-bar">
         <div class="row">
             <span class="row-label">语速</span>
@@ -314,8 +424,13 @@
     </div>
 
     <select id="jumpSelect" class="select-box" style="width:100%;padding:12px;font-size:15px;border-radius:8px;border:none;background:#2d2d44;color:#fff;"></select>
+    </div>
 
-<script>
+    <div class="people-section" id="peopleSection">
+        <div id="orgContainer"></div>
+    </div>
+
+    <script>
 // ===================== 1. 數據：詞條帶分組與 id =====================
 const GROUPS = {
     gaming: "Gaming Floor",
@@ -773,7 +888,118 @@ document.addEventListener("touchend", (e) => {
     }
 }, { passive: true });
 
-// ===================== 8. iOS / 後台兼容 =====================
+// ===================== 8. 人員組織架構 =====================
+const PEOPLE = {
+    teams: [
+        {
+            id: 1,
+            name: "Team 1 — Winby Wong",
+            nodes: [
+                { name: "Winby Wong",     title: "Vice President",          titleCn: "副总裁",       level: "vp",  img: "WinbyWong.png", indent: 0 },
+                { name: "Christal Tam",   title: "Director",               titleCn: "总监",         level: "dir", img: "ChristalTam.png", indent: 1 },
+                { name: "Alex Kan",       title: "Assistant Director",     titleCn: "助理总监",     level: "ad",  img: "AlexKan.png", indent: 2 },
+                { name: "Venus Ng",       title: "Assistant Director",     titleCn: "助理总监",     level: "ad",  img: "VenusNg.png", indent: 2 }
+            ]
+        },
+        {
+            id: 2,
+            name: "Team 2 — Susana Veloso",
+            nodes: [
+                { name: "Susana Veloso",  title: "Assistant Vice President", titleCn: "助理副总裁", level: "avp", img: "SusanaVeloso.png", indent: 0 },
+                { name: "Candice Tai",    title: "Director",               titleCn: "总监",         level: "dir", img: "CandiceTai.png", indent: 1 },
+                { name: "Warren Un",      title: "Assistant Director",     titleCn: "助理总监",     level: "ad",  img: "WarrenUn.png", indent: 2 },
+                { name: "Cathy Yuen",     title: "Assistant Director",     titleCn: "助理总监",     level: "ad",  img: "CathyYuen.png", indent: 2 }
+            ]
+        },
+        {
+            id: 3,
+            name: "高级副总裁 (SVP)",
+            nodes: [
+                { name: "Philip Lam",   title: "SVP", titleCn: "高级副总裁", level: "svp", img: "PhilipLam.png", indent: 0 },
+                { name: "Kitty Chui",   title: "SVP", titleCn: "高级副总裁", level: "svp", img: "KittyChui.png", indent: 0 },
+                { name: "Paul Ng",      title: "SVP", titleCn: "高级副总裁", level: "svp", img: "PaulNg.png", indent: 0 },
+                { name: "Eddie Lou",    title: "SVP", titleCn: "高级副总裁", level: "svp", img: "EddieLou.png", indent: 0 },
+                { name: "Wing Ao",      title: "SVP", titleCn: "高级副总裁", level: "svp", img: "WingAo.png", indent: 0 },
+                { name: "Raymond Voon", title: "SVP", titleCn: "高级副总裁", level: "svp", img: "RaymondVoon.png", indent: 0 }
+            ]
+        }
+    ]
+};
+
+function renderPeople() {
+    const container = $("orgContainer");
+    if (!container) return;
+    // 分组：按 indent 分组
+    const html = PEOPLE.teams.map(team => {
+        // 对每个团队，按 indent 分組
+        const groups = {};
+        team.nodes.forEach(n => {
+            if (!groups[n.indent]) groups[n.indent] = [];
+            groups[n.indent].push(n);
+        });
+        const levels = Object.keys(groups).sort((a,b) => a - b);
+        let teamHtml = `<div class="org-team"><div class="org-team-title">${escapeHTML(team.name)}</div>`;
+        levels.forEach(indent => {
+            const rowClass = parseInt(indent) > 0 ? `org-row indent-${indent}` : "org-row";
+            teamHtml += `<div class="${rowClass}">`;
+            groups[indent].forEach(p => {
+                const imgPath = `Picture/${p.img}`;
+                const escapedName = escapeHTML(p.name);
+                teamHtml += `
+                    <div class="org-card level-${p.level}">
+                        <img class="org-avatar" src="${imgPath}" alt="${escapedName}" loading="lazy" onerror="this.style.display='none'">
+                        <div class="org-info">
+                            <div class="org-name">${escapedName}</div>
+                            <div class="org-title">${escapeHTML(p.title)}</div>
+                            <div class="org-title-cn">${escapeHTML(p.titleCn)}</div>
+                        </div>
+                        <button class="org-speak" data-name="${escapedName}" title="朗读英文名">🔊</button>
+                    </div>`;
+            });
+            teamHtml += `</div>`;
+        });
+        teamHtml += `</div>`;
+        return teamHtml;
+    }).join("");
+    container.innerHTML = html;
+    // 綁定人名朗讀（事件代理）
+    container.addEventListener("click", (e) => {
+        const btn = e.target.closest(".org-speak");
+        if (!btn) return;
+        const name = btn.dataset.name;
+        if (name) {
+            speechSynthesis.cancel();
+            cancelTimers();
+            currentUtter = null;
+            const u = new SpeechSynthesisUtterance(name);
+            u.lang = "en-US";
+            u.rate = State.rate;
+            u.pitch = 1;
+            currentUtter = u;
+            speechSynthesis.speak(u);
+        }
+    });
+}
+
+// ===================== 9. Tab 切換 =====================
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        const tabName = tab.dataset.tab;
+        const vocabSection = $("vocabSection");
+        const peopleSection = $("peopleSection");
+        if (tabName === "vocab") {
+            vocabSection.classList.remove("hidden");
+            peopleSection.classList.remove("active");
+        } else {
+            vocabSection.classList.add("hidden");
+            peopleSection.classList.add("active");
+        }
+    });
+});
+
+// ===================== 10. iOS / 後台兼容 =====================
 // 首次进入尝试解锁 voices
 function unlockVoices() {
     if (!("speechSynthesis" in window)) return;
@@ -791,7 +1017,7 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
-// ===================== 9. 初始化 =====================
+// ===================== 11. 初始化 =====================
 loadState();
 rebuildSelect();
 // 应用持久化设置
@@ -802,6 +1028,7 @@ intervalVal.textContent = State.autoInterval + "s";
 favFilterChip.classList.toggle("active", State.favFilter);
 updateAutoUI();
 render();
+renderPeople();
 unlockVoices();
 
 // Service Worker

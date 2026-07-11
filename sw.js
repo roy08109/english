@@ -1,4 +1,4 @@
-const CACHE_NAME = 'floor-op-v2';
+const CACHE_NAME = 'floor-op-v3';
 const ASSETS = [
   './',
   './index.html',
