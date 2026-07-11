@@ -286,6 +286,8 @@
         /* 人員組織圖 */
         .people-section { display: none; }
         .people-section.active { display: block; }
+        .phone-section { display: none; }
+        .phone-section.active { display: block; }
         .vocab-section { display: block; }
         .vocab-section.hidden { display: none; }
 
@@ -368,6 +370,83 @@
             background: rgba(79,195,247,0.2);
             transform: scale(0.9);
         }
+        /* 電話本 */
+        .phone-card {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border-left: 3px solid #4fc3f7;
+        }
+        .phone-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffd54f;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #3a3a5c;
+        }
+        .phone-card-title .en {
+            color: #81d4fa;
+            font-weight: 600;
+        }
+        .phone-row {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 14px;
+            padding: 8px 10px;
+            background: #1e1e32;
+            border-radius: 8px;
+        }
+        .phone-row:last-child { margin-bottom: 0; }
+        .phone-row-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+        .phone-row-desc .zh {
+            color: #ddd;
+        }
+        .phone-row-desc .sep {
+            color: #4fc3f7;
+            margin: 0 4px;
+        }
+        .phone-row-desc .en {
+            color: #81d4fa;
+        }
+        .phone-row-num {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffb300;
+            padding-left: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .phone-row-num::before {
+            content: "📞 ";
+            font-weight: 400;
+        }
+        .phone-empty {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding: 40px 0;
+        }
+        .phone-search {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border-radius: 10px;
+            border: none;
+            background: #2d2d44;
+            color: #fff;
+            outline: none;
+            margin-bottom: 16px;
+        }
+        .phone-search::placeholder { color: #666; }
+        .phone-search:focus {
+            background: #33335c;
+            box-shadow: 0 0 0 2px #4fc3f7;
+        }
     </style>
 </head>
 <body>
@@ -379,6 +458,7 @@
     <div class="tab-bar">
         <div class="tab active" data-tab="vocab">📖 單詞</div>
         <div class="tab" data-tab="people">👥 人員</div>
+        <div class="tab" data-tab="phone">📞 電話</div>
     </div>
 
     <div class="vocab-section" id="vocabSection">
@@ -428,6 +508,11 @@
 
     <div class="people-section" id="peopleSection">
         <div id="orgContainer"></div>
+    </div>
+
+    <div class="phone-section" id="phoneSection">
+        <input class="phone-search" id="phoneSearch" type="text" placeholder="🔍 搜索部门、号码或关键词…" autocomplete="off">
+        <div id="phoneContainer"></div>
     </div>
 
     <script>
@@ -1074,25 +1159,89 @@ function renderPeople() {
     });
 }
 
-// ===================== 9. Tab 切換 =====================
+// ===================== 9. 電話本 =====================
+function parsePhoneRow(eng, zh) {
+    // 1. 从英文中提取所有号码
+    const phones = [...eng.matchAll(/\b(\d{4,8}(?:[-/]\d{4,8})*)\b/g)].map(m => ({ num: m[0], idx: m.index }));
+    if (phones.length === 0) return null;
+    // 2. 按逗号切分英文
+    const enParts = eng.split(/,\s*/).map(s => s.trim()).filter(Boolean);
+    const items = [];
+    enParts.forEach(p => {
+        const pm = p.match(/\b(\d{4,8}(?:[-/]\d{4,8})*)\b/);
+        if (pm) {
+            const desc = p.slice(0, pm.index).replace(/[-–]\s*$/, '').trim();
+            items.push({ desc: desc || p.replace(pm[0], '').replace(/[-–,\s]+$/, '').trim(), phone: pm[0] });
+        }
+    });
+    if (items.length === 0) return null;
+    // 3. 中文按"、"切分（去掉"："前的主标题）
+    let zhRest = zh;
+    const zColon = zh.indexOf("：");
+    if (zColon >= 0) zhRest = zh.slice(zColon + 1);
+    const zhItems = zhRest.split("、").map(s => s.trim()).filter(Boolean);
+    // 4. 英文标题：取第一个 item desc 中"："之前的部分
+    let enTitle = "";
+    const firstDesc = items[0].desc;
+    const tEnd = firstDesc.lastIndexOf(":");
+    if (tEnd >= 0) enTitle = firstDesc.slice(0, tEnd + 1).trim();
+    // 5. 中文标题：整个中文"："之前
+    let zhTitle = "";
+    if (zColon >= 0) zhTitle = zh.slice(0, zColon + 1);
+    return { zhTitle, enTitle, items, zhItems };
+}
+function renderPhone(filterText) {
+    const container = $("phoneContainer");
+    if (!container) return;
+    const entries = wordList.filter(w => w.group === "hot");
+    const ft = filterText ? filterText.toLowerCase() : "";
+    let html = "";
+    entries.forEach(entry => {
+        const parsed = parsePhoneRow(entry.eng, entry.cn);
+        if (!parsed) return;
+        const allText = (entry.eng + " " + entry.cn).toLowerCase();
+        if (ft && !allText.includes(ft)) return;
+        // 标题行
+        let titleHtml = "";
+        if (parsed.zhTitle || parsed.enTitle) {
+            titleHtml = `<div class="phone-card-title">${escapeHTML(parsed.zhTitle)} <span class="en">${escapeHTML(parsed.enTitle)}</span></div>`;
+        }
+        // 逐行
+        let rowsHtml = "";
+        parsed.items.forEach((item, i) => {
+            const zhLabel = parsed.zhItems[i] || "";
+            rowsHtml += `
+                <div class="phone-row">
+                    <div class="phone-row-desc"><span class="zh">${escapeHTML(zhLabel)}</span><span class="sep">|</span><span class="en">${escapeHTML(item.desc)}</span></div>
+                    <div class="phone-row-num">${escapeHTML(item.phone)}</div>
+                </div>`;
+        });
+        html += `<div class="phone-card">${titleHtml}${rowsHtml}</div>`;
+    });
+    container.innerHTML = html || '<div class="phone-empty">🔍 没有匹配的电话记录</div>';
+}
+document.addEventListener("input", e => { if (e.target.id === "phoneSearch") renderPhone(e.target.value.trim()); });
+
+// ===================== 10. Tab 切換 =====================
+const SECTIONS = {
+    vocab:  { el: () => $("vocabSection"),  show: e => e.classList.remove("hidden"), hide: e => e.classList.add("hidden") },
+    people: { el: () => $("peopleSection"), show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") },
+    phone:  { el: () => $("phoneSection"),  show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") }
+};
 document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
         const tabName = tab.dataset.tab;
-        const vocabSection = $("vocabSection");
-        const peopleSection = $("peopleSection");
-        if (tabName === "vocab") {
-            vocabSection.classList.remove("hidden");
-            peopleSection.classList.remove("active");
-        } else {
-            vocabSection.classList.add("hidden");
-            peopleSection.classList.add("active");
-        }
+        Object.keys(SECTIONS).forEach(key => {
+            const s = SECTIONS[key], el = s.el();
+            if (el) (key === tabName ? s.show : s.hide)(el);
+        });
+        if (tabName === "phone") renderPhone($("phoneSearch").value.trim());
     });
 });
 
-// ===================== 10. iOS / 後台兼容 =====================
+// ===================== 11. iOS / 後台兼容 =====================
 // 首次进入尝试解锁 voices
 function unlockVoices() {
     if (!("speechSynthesis" in window)) return;
@@ -1110,7 +1259,7 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
-// ===================== 11. 初始化 =====================
+// ===================== 12. 初始化 =====================
 loadState();
 rebuildSelect();
 // 应用持久化设置
@@ -1122,6 +1271,7 @@ favFilterChip.classList.toggle("active", State.favFilter);
 updateAutoUI();
 render();
 renderPeople();
+renderPhone();
 unlockVoices();
 
 // Service Worker
