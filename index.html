@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="english-192.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="english-512.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="english-512.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Floor Op">
+    <title>赌场运营英文对照学习器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", Arial, sans-serif;
+        }
+        body {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4fc3f7;
+        }
+        .tip {
+            color: #aaa;
+            font-size: 14px;
+        }
+        .select-box {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 25px;
+            background: #2d2d44;
+            color: #fff;
+        }
+        .card {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 320px;
+            margin-bottom: 25px;
+        }
+        .eng-text {
+            font-size: 20px;
+            line-height: 1.7;
+            color: #81d4fa;
+            margin-bottom: 20px;
+        }
+        .cn-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #ffd54f;
+            margin-bottom: 30px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .read-btn {
+            background: #0288d1;
+            color: white;
+        }
+        .prev-btn {
+            background: #388e3c;
+            color: white;
+        }
+        .next-btn {
+            background: #f57c00;
+            color: white;
+        }
+        button:active {
+            opacity: 0.7;
+        }
+        .page-num {
+            text-align: center;
+            margin-top: 15px;
+            color: #bbb;
+        }
+        .voice-tip {
+            color: #ff8888;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Floor Operation 中英文对照学习</h1>
+        <p class="tip">点击发音朗读，支持上一句/下一句/下拉快速跳转</p>
+    </div>
+    <div class="voice-tip" id="voiceTip"></div>
+    <select id="jumpSelect" class="select-box"></select>
+
+    <div class="card">
+        <div class="eng-text" id="engContent"></div>
+        <div class="cn-text" id="cnContent"></div>
+        <div class="btn-group">
+            <button class="read-btn" id="readBtn">🔊 朗读英文发音</button>
+            <button class="prev-btn" id="prevBtn">⬅ 上一格</button>
+            <button class="next-btn" id="nextBtn">下一格 ➡</button>
+        </div>
+        <div class="page-num" id="pageInfo"></div>
+    </div>
+
+<script>
+// 全部文本库：英文 + 中文翻译
+const wordList = [
+    {eng: "Floor Operation",cn: "楼层运营"},
+    {eng: "1 Gaming Floor",cn: "1 娱乐场楼层（博彩区）"},
+    {eng: "a) Pit and table Games & Slot area and Games",cn: "a) 赌台区域、桌上游戏及老虎机区域"},
+    {eng: "b) F&B Outlets (under Sands China Ltd.)",cn: "b) 餐饮门店（隶属于金沙中国有限公司）"},
+    {eng: "LON : Crystal Jade, North Palace, TimHoWan, Paiza Club Dining",cn: "伦敦人：翡翠拉面小笼包、北宫、添好运、御匾会会员餐厅"},
+    {eng: "LG : Chelsea Garden, Hampton Court",cn: "伦敦人金光大道：切尔西花园、汉普顿阁"},
+    {eng: "VE : Imperial house DS, Red Dragon noodles, Paiza Dining, Jiangnan, Hiro, 鑽匯dining.",cn: "威尼斯人：帝皇点心、红龙面家、御匾餐厅、江南、Hiro、钻汇餐厅"},
+    {eng: "PA : Market Bistro & Paiza Dining",cn: "御匾豪园：市集小馆 & 御匾餐厅"},
+    {eng: "ST:Moonlight",cn: "圣瑞吉：月光餐厅"},
+    {eng: "FS:Ping",cn: "四季酒店：Ping餐厅"},
+    {eng: "c) Location of Operation – Counter / Gaming",cn: "c) 运营点位——柜台/博彩区服务台"},
+    {eng: "d) Other facilities (Toilet, cage, pay phone, dining area, security, TITO machine)",cn: "d) 其他设施（洗手间、筹码房、公用电话、用餐区、安保、TITO筹码兑换机）"},
+    {eng: "e) Smoking rooms locations near non-smoking gaming area",cn: "e) 非吸烟博彩区周边吸烟室位置"},
+    {eng: "2 Non-Gaming Floor",cn: "2 非博彩楼层"},
+    {eng: "a) F&B Outlets",cn: "a) 餐饮门店"},
+    {eng: "SANDS – Copa, Golden Court, Garden Nine Restaurant, 888 buffet & foodcourt",cn: "金沙酒店：Copa、金阁、九庭餐厅、888自助及美食广场"},
+    {eng: "VE–North, Pin Yue Xuan",cn: "威尼斯人：北方馆、品粤轩"},
+    {eng: "VE Outlet–TaiYi, Marmelreira Seafood, Haidilao, EDO, Lei Garden, Taihing, Mcsorleys",cn: "威尼斯人商铺：泰一、马美利亚海鲜、海底捞、EDO、利苑、太兴、麦斯利酒吧"},
+    {eng: "FS -- ZiYat Heen, Belcancao, Xiao Ting, Vista 38, Ote The Study",cn: "四季酒店：紫逸轩、Belcancao、小庭、38观景餐厅、Ote书房餐吧"},
+    {eng: "LON & LG– North Palace, TimHoWan, Churchill’s Table, TaiEr, Hai Di Lao, Jin Yue Xuan, HipSeng, The Conservatory, The Manor, the St. Regis Bar, Chiado, The Huayang Garden, The Residence, Crystal Jade, The Kensington, The Mews, Gordon Ramsay Pub & Grill, Chelsea Garden, Hampton Court",cn: "伦敦人及金光大道：北宫、添好运、丘吉尔餐桌、泰尔、海底捞、金悦轩、协成、温室花园、庄园餐厅、瑞吉酒吧、希雅度、华洋花园、府邸餐厅、翡翠拉面、肯辛顿、马厩餐吧、戈登拉姆齐烧烤酒馆、切尔西花园、汉普顿阁"},
+    {eng: "PA– Paiza Dining, Le Buffet, Crystal Jade, Brasserie, Lotus Palace, La Chine, Pool Café, Le Sourire, Emerald House",cn: "御匾豪园：御匾餐厅、自助餐厅、翡翠、法式小馆、莲宫、La Chine、泳池咖啡、微笑餐厅、翠玉轩"},
+    {eng: "b) Entertainment:",cn: "b) 娱乐设施："},
+    {eng: "VE - teamLab, Indoor Gondola Ride, Outdoor Gondola Ride, theater, Cotai Arena",cn: "威尼斯人：数字艺术馆、室内贡多拉船、室外贡多拉船、剧场、金光综艺馆"},
+    {eng: "LON&LG - Londoner Moments, Check-in points, Theater Arena",cn: "伦敦人及金光大道：伦敦时光打卡点、入住办理点、剧场场馆"},
+    {eng: "c) Service Counters (Business Center, CTL, Front Desk, Concierge, Box Office, Ferry, Limo drop off point, shuttle bus pick up/drop off point)",cn: "c) 服务柜台（商务中心、客户服务专线、前台、礼宾部、票务处、渡轮服务、轿车落客点、穿梭巴士上下客点）"},
+    {eng: "Common use contact - LG",cn: "通用联络电话 - 伦敦人金光大道"},
+    {eng: "Londoner Duty: LO Main Duty - 66182121, LO Duty - 66182112, Slot Duty - 63350099, HHL Manager duty-62381966",cn: "伦敦人值班：伦敦人主值班、伦敦人值班、老虎机值班、高层经理值班电话"},
+    {eng: "LC APEX Duty - 62381963, L3 APEX Duty - 63926555, Foreign Pit 937 Duty - 63027002",cn: "伦敦人APEX值班、三楼APEX值班、937国际赌台值班电话"},
+    {eng: "Counter: LON Casino Main Counter - 37341/37392, Apex Counter-38886",cn: "柜台：伦敦人娱乐场主柜台、APEX柜台分机"},
+    {eng: "Londoner Grand :",cn: "伦敦人御匾汇："},
+    {eng: "Duty: LG L01 Main Duty - 66833105, LG L01 Floor Duty - 63261587, LG APEX Duty - 66637202",cn: "值班：金光大道L01主值班、L01楼层值班、APEX值班电话"},
+    {eng: "Counter: LG L01 Main Counter - 81139622",cn: "柜台：金光大道L01主柜台电话"},
+    {eng: "Share Service: VE, LO, LG, PA & Sands - 81181002, FS - 81181408 or 63005198",cn: "共享服务：威尼斯人、伦敦人、金光大道、御匾、金沙共用热线；四季酒店专线"},
+    {eng: "VE Outsource - 81185400, VE(standby) 81185340, FS Limo Counter - 81185416, 66798313 (10:30am -11:30pm)",cn: "威尼斯人外包服务、威尼斯人后备值班、四季轿车柜台（服务时段早上10:30至晚上11:30）"},
+    {eng: "LON-(pre-book) 81136400, 62663078, Limo (standby) 81135127/62381998/ 62663076",cn: "伦敦人预约专线、轿车后备值班电话"},
+    {eng: "PA-FS(standby)81181323/ 63356663, LG APEX Umo Counter - 62663076, LG Paiza Grand Umo Counter 66728053",cn: "御匾/四季后备值班、金光大道APEX礼宾柜台、金光大道御匾汇礼宾柜台"},
+    {eng: "FS(standby) 81115400, PA(standby) 65550214, LG APEX - 66182193",cn: "四季后备值班、御匾后备值班、金光大道APEX专线"},
+    {eng: "Security: 81135999 /66816724 (For tips)",cn: "安保部热线（用于上报小费相关事宜）"},
+    {eng: "IT-81183210, Facilities - 81138400, Housekeeping (Public Area) - 66182193, (LON) 811-35999",cn: "信息技术部、设施部、公共区域客房部、伦敦人客房部热线"},
+    {eng: "Hunter, Surveillance - 81138000, Fire & Emergency 811-84999, Emergency Hotline (24hrs)",cn: "监控安保部、消防及紧急事故24小时热线"},
+    {eng: "CTL - 81135888 (24hrs)",cn: "客户服务专线（24小时）"},
+    {eng: "LG Service Support Duty - 66834463, Sales Support - 81182075",cn: "金光大道服务支援值班、销售支援热线"},
+    {eng: "Maintenance Service: MIA - 66798326/ MFT - 66798328/ TFX - 66798329",cn: "维修保养服务：不同维修班组专线"},
+    {eng: "Welcome Service: Londoner - 81139100, Londoner Court-81136668, Londoner Grand - 81130333, Paiza Grand - 81130352",cn: "迎宾服务：伦敦人、伦敦人庭院、伦敦人御匾汇、御匾豪园迎宾热线"},
+    {eng: "Front Office: Londoner - 81139100, Londoner Court-81136668, Venetian - 81185800, Four Seasons - 81128200",cn: "前台服务：伦敦人、伦敦人庭院、威尼斯人、四季酒店前台电话"},
+    {eng: "Conard - 81136208, St. Regis - 81134914, Sands - 811831D1/ 81183102",cn: "康莱德、瑞吉酒店、金沙酒店前台分机"},
+    {eng: "Paiza - 81115400",cn: "御匾专属热线"},
+    {eng: "Hotlines: Sands - 28833330, Venetian - 28828888, Four Seasons - 28818888, Londoner- 28868888, Londoner Court - 28868888",cn: "总机热线：金沙、威尼斯人、四季、伦敦人、伦敦人庭院总机号码"},
+    {eng: "Londoner Grand & Paiza Grand- 28802000, Conard - 28829000, St. Regis -28828898",cn: "伦敦人御匾汇&御匾豪园、康莱德、瑞吉酒店总机"},
+    {eng: "Knowing the executive",cn: "管理层组织架构"},
+    {eng: "1 Department O-Chart & Company O-Chart",cn: "1 部门组织架构图 & 集团组织架构图"}
+];
+
+let currentIndex = 0;
+const engDom = document.getElementById("engContent");
+const cnDom = document.getElementById("cnContent");
+const pageInfoDom = document.getElementById("pageInfo");
+const jumpSelect = document.getElementById("jumpSelect");
+const readBtn = document.getElementById("readBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const voiceTip = document.getElementById("voiceTip");
+
+// 初始化下拉框
+function initSelect() {
+    jumpSelect.innerHTML = "";
+    wordList.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = `第${idx+1}句：${item.eng.slice(0,30)}...`;
+        jumpSelect.appendChild(opt);
+    });
+}
+
+// 渲染当前内容
+function render() {
+    const item = wordList[currentIndex];
+    engDom.textContent = item.eng;
+    cnDom.textContent = item.cn;
+    pageInfoDom.textContent = `当前：${currentIndex + 1} / 总 ${wordList.length} 句`;
+    jumpSelect.value = currentIndex;
+}
+
+// 修复朗读函数：等待语音加载、清除旧朗读、捕获错误
+function speakEng() {
+    voiceTip.textContent = "";
+    // 停止正在朗读的语音
+    speechSynthesis.cancel();
+    const text = wordList[currentIndex].eng;
+    // 判断浏览器是否支持语音
+    if (!window.speechSynthesis) {
+        voiceTip.textContent = "❌ 当前浏览器不支持语音朗读，请更换Chrome/Edge";
+        return;
+    }
+    // 等待语音包加载完成
+    function doSpeak() {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "en-US";
+        utter.rate = 0.7; // 语速放慢，听得更清楚
+        utter.pitch = 1;
+        // 朗读完成提示
+        utter.onend = () => {
+            voiceTip.textContent = "✅ 朗读完成";
+        };
+        // 朗读失败捕获
+        utter.onerror = (err) => {
+            voiceTip.textContent = "❌ 朗读失败：" + err.error + "，请打开系统语音权限";
+        };
+        speechSynthesis.speak(utter);
+    }
+    // 加载语音列表
+    let voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+        speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+            doSpeak();
+        }
+    } else {
+        doSpeak();
+    }
+}
+
+// 上一句
+function prev() {
+    if(currentIndex > 0) {
+        currentIndex--;
+        render();
+        speechSynthesis.cancel();
+        voiceTip.textContent = "";
+    }
+}
+
+// 下一句
+function next() {
+    if(currentIndex < wordList.length -1) {
+        currentIndex++;
+        render();
+        speechSynthesis.cancel();
+        voiceTip.textContent = "";
+    }
+}
+
+// 跳转选择
+jumpSelect.addEventListener("change", (e)=>{
+    currentIndex = parseInt(e.target.value);
+    render();
+    speechSynthesis.cancel();
+    voiceTip.textContent = "";
+});
+
+// 按钮绑定
+readBtn.addEventListener("click", speakEng);
+prevBtn.addEventListener("click", prev);
+nextBtn.addEventListener("click", next);
+
+// 页面初始化
+initSelect();
+render();
+
+// 注册 Service Worker（PWA 离线 + 主屏幕体验）
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => {
+            console.warn('SW 注册失败：', err);
+        });
+    });
+}
+</script>
+</body>
+</html>
