@@ -670,7 +670,99 @@ const RAW = [
     ["patron", "在過去 6 個月內賺取所需分數 (升級至紅寶 I 所需積分: 888 分；紅寶 II 所需積分: 3,888 分；藍寶 I 所需積分: 8,888 分；鑽石 II: 18,888 分；鑽石 III:28,888 分)", "过去 6 个月累计达标积分（升级红宝石 I 需 888 积分；红宝石 II 需 3888 积分；蓝宝石 I 需 8888 积分；钻石 II 需 18888 积分；钻石 III 需 28888 积分）"],
     ["patron", "d-1): Resort Credits redemption flow", "度假赠码额度兑换流程"],
     ["patron", "e) Redeem ferry ticket (free offer/promo point)", "兑换船票（免费礼遇 / 活动积分兑换）"],
-    ["patron", "f) e-Membership QR code", "电子会员二维码"]
+    ["patron", "f) e-Membership QR code", "电子会员二维码"],
+    // ===== 赠码事由代码 Reason Code for Comp Item =====
+    ["comp", "Reason code for comp item In GUI: All Comp issued MUST have reason code input selected", "系统界面发放赠码必须选择对应事由代码，所有赠码操作均不可空置"],
+    ["comp", "Display CODE (ACS) 界面代码 | REASON CODE IN FULL 完整代码 | REASON and Prerequisite Requirement 事由与前置要求 | Required Remark Format 备注填写规范", "界面代码、完整代码、事由与前置要求、备注填写规范四栏对照表"],
+    ["comp", "BASED ON LOSS (ACS Display)\nREASON CODE: BASED ON LOSS\nComp issued based on Loss of current trip. Must put loss amount in Remark\nRemark Format: APPROVER NAME \"L $XXXXXX\" (loss amount)", "界面代码：BASED ON LOSS\n完整代码：BASED ON LOSS\n依据客人本次行程博彩亏损发放赠码，备注必须填写亏损金额\n备注格式：审批人姓名 + \"L\" + 亏损金额"],
+    ["comp", "QUALIFIED THEORETICAL (ACS Display)\nREASON CODE: QUALIFIED THEORETICAL\nQualified based on current trip theo for F&B, Ferry, Bus, Spa, Limo, Transportation, Show tickets, and Gifts (below HKD4,000); not for PC/SB/RD/Gift (HKD4,000+) unless approved by ED or above\nRemark: (1) Potential Value (2) Companion of Acquired Patron #", "界面代码：QUALIFIED THEO\n完整代码：QUALIFIED THEORETICAL\n客人本次行程理论赢额达标，适用于餐饮、渡轮、巴士、水疗、专车、交通、演出门票、礼品(HKD4,000以内)；礼品超HKD4,000需行政总监及以上审批\n备注格式：1. 潜在价值 2. 同行宾客编号"],
+    ["comp", "ACQUISITION (ACS Display)\nREASON CODE: ACQUISITION\nAcquisition - e.g. New / reactive patron\nRemark: (1) Potential Value (2) Companion of Acquired Patron #", "界面代码：ACQUISITION\n完整代码：ACQUISITION\n新客拓展，如新潜在客户、沉睡唤醒客户\n备注格式：1. 潜在价值 2. 同行宾客编号"],
+    ["comp", "EXT. TRIP (OVER) (ACS Display)\nREASON CODE: EXTEND TRIP WITH OVERCOMP\nOnly when patron is over R1% and no other reason code applicable. Maintain Loyalty: extend patron's play, long stay / high frequency visitation; Approval by ED or Above\nRemark: Extend Play / Share of Wallet / Long Stay / Frequent Player / Companion of Main patron + APPROVER NAME", "界面代码：EXT. TRIP (OVER)\n完整代码：EXTEND TRIP WITH OVERCOMP\n仅客人消费超基准比例且无其他适用事由时使用；用于维系客户、延长游玩/长住/高频到访；需行政总监及以上审批\n备注格式：延长游玩周期/钱包占比/入住时长/常客等级/同行宾客；末尾填写审批人姓名"],
+    // ===== Comp Room 赠码客房规则 =====
+    ["comp", "Comp Room Rules: On-day / Pre booking for comp rooms by PS host. Any reservation under pre-booking can only be revised and comped by the 1st compor", "贵宾接待专员可当日办理或提前预订赠码客房；所有提前预订订单，仅最初申请赠码的经办人有权修改、发放赠码"],
+    ["comp", "Room Type - FS (四季酒店)\nDK, DQ, PK, JK, EK, EQ, AM1K, ROKK, ROKT / Presidential (Outside allotment)", "四季酒店房型：DK、DQ、PK、JK、EK、EQ、AM1K、ROKK、ROKT\n总统套房属于外部配额房型"],
+    ["comp", "Room Type - VE (威尼斯人)\nAll suite room types: Bella (Q-TDT), Royale (K-KCT), Rialto (KST), Rialto Bella (TST)", "威尼斯人全系列套房：贝拉套房(Q-TDT)、皇廷套房(K-KCT)、利雅度套房(KST)、贝拉利雅度套房(TST)"],
+    ["comp", "Room Type - Venetian Premio Suite\nK3 (smoking), K4, Q3 (smoking), Q4, Family Suite (10 rooms only, need pre-booking)", "威尼斯Premio套房：K3吸烟房、K4、Q3吸烟房、Q4、家庭套房(仅10间，必须提前预订)"],
+    ["comp", "Room Type - LON (伦敦人)\nLO, SH, CN, SR, LC, DBS (only 14 rooms) refer to Sharepoint", "伦敦人房型：LO、SH、CN、SR、LC、DBS(仅14间)，详情查阅内部共享文档Sharepoint"],
+    ["comp", "Room Type - LG (伦敦人金光大道)\nR2, RK, V2, VK, LS2, LSK, CS2, CS, CS2B", "金光大道房型：R2、RK、V2、VK、LS2、LSK、CS2、CS、CS2B"],
+    ["comp", "Room Type - PG (御匾广场)\n02, GK, GK GS2, G2, GK, GS2, GSK, GC2, GC28, GHK, GH28, TS, JS, T28, L28, Y28, N28", "御匾广场房型：02、GK、GK GS2、G2、GK、GS2、GSK、GC2、GC28、GHK、GH28、TS、JS、T28、L28、Y28、N28"],
+    ["comp", "Room Type - PA (御匾豪园)\nKC, TD, TQ, OF, KJ, KS, K5V, TS, TV, SMAK1, SMAK1V, SPAK2, SPAK2V, SVRK3", "御匾豪园房型：KC、TD、TQ、OF、KJ、KS、K5V、TS、TV、SMAK1、SMAK1V、SPAK2、SPAK2V、SVRK3"],
+    ["comp", "Room Type - SANDS (金沙)\nSANDS: KD, KP, TD, TP, KS\nSANDS Plaza: KDZ, SLA1, SLB1, SLC1, SJA2, SJB2, SVN2, SPH2, SDG3, SGS3", "金沙基础房型：KD、KP、TD、TP、KS\n金沙广场房型：KDZ、SLA1、SLB1、SLC1、SJA2、SJB2、SVN2、SPH2、SDG3、SGS3"],
+    // ===== 预订审批细则 Approval for Booking =====
+    ["comp", "Comp Room Approval a): Service Team can comp max 4 Nights only for 2 Rooms when within comp guideline", "赠码审批a)：在赠码标准额度内，服务团队最多可审批2间客房、4晚免费房"],
+    ["comp", "Comp Room Approval b) Add Room Criteria:\n- ADT 5K or above, meet add room criteria (no need app)\n- If below ADT 8K even meet criteria > PS SM or above app", "赠码审批b) 加房标准：\n- 日均消费HKD5,000及以上满足加房标准，无需额外审批\n- 日均消费低于HKD8,000即便满足加房标准仍需销售经理及以上审批"],
+    ["comp", "Comp Room Approval c) Within Comp Guideline (Additional Room):\n3-6 rooms > PS SM/Sales AD or above app\n7+ rooms > AVP or above app", "赠码审批c) 标准额度内额外加房：\n3-6间房：销售经理/销售副总监及以上审批\n7间及以上：副总裁及以上审批"],
+    ["comp", "Comp Room Approval d) Without Comp Guideline (Additional Room):\n1-2 rooms > Manager or above app\n3-6 rooms > PS SM/Sales AD or above app\n7+ rooms > AVP or above app", "赠码审批d) 超出标准额度额外加房：\n1-2间房：经理及以上审批\n3-6间房：销售经理/销售副总监及以上审批\n7间及以上：副总裁及以上审批"],
+    ["comp", "Comp Room Approval e) Within Comp Guideline (Length of Stay):\n5-6 nights > AD or above app\n7+ nights > AVP or above app", "赠码审批e) 标准额度内延长入住：\n入住5-6晚：副总监及以上审批\n入住7晚及以上：副总裁及以上审批"],
+    ["comp", "Comp Room Approval f) Without Comp Guideline (Length of Stay):\n1 night > AM or above app\n2-6 nights > AD or above app\n7+ nights > AVP or above app", "赠码审批f) 超出标准额度延长入住：\n入住1晚：客户经理及以上审批\n入住2-6晚：副总监及以上审批\n入住7晚及以上：副总裁及以上审批"],
+    // ===== 审批分级表 =====
+    ["comp", "Approval Table 1 - By Length of Stay (按入住晚数审批)\nWithin Guideline | Outside Guideline\n1-4 N: N/A | 1-4 N: AD or above\n5-6 N: AD or above | 5-6 N: AD or above\n7+ N: AVP or above | 7+ N: AVP or above", "审批表1：按入住晚数\n标准额度内 | 超出标准额度\n1-4晚：无需审批 | 1-4晚：副总监及以上\n5-6晚：副总监及以上 | 5-6晚：副总监及以上\n7晚及以上：副总裁及以上 | 7晚及以上：副总裁及以上"],
+    ["comp", "Approval Table 2 - By Room Count (按客房数量审批)\nWithin Guideline | Outside Guideline\n1-2 R: N/A | 1-2 R: AD or above\n3-6 R: AD or above | 3-6 R: AD or above\n7+ R: AVP or above | 7+ R: AVP or above", "审批表2：按客房数量\n标准额度内 | 超出标准额度\n1-2间：无需审批 | 1-2间：副总监及以上\n3-6间：副总监及以上 | 3-6间：副总监及以上\n7间及以上：副总裁及以上 | 7间及以上：副总裁及以上"],
+    ["comp", "Comp Room Approval g) Reject Room upgrade > ED or above verbal app (LON - AVP or above)", "赠码审批g) 驳回客房升级申请需行政总监及以上口头审批(LON系列房型仅需副总裁及以上口头审批)"],
+    // ===== 代办入住 Check In on behalf (Palza会员专属) =====
+    ["patron", "Check In on behalf / Collect Room Key & Renew Room Key", "代办入住、领取房卡及续房卡"],
+    ["patron", "- Palza Member Only and no approval for other Tier", "仅限Palza会员，其他客层不适用本流程"],
+    ["patron", "Procedure: MD TMs approach FO with Palza patron number. TM MUST present staff ID (confirm they are Marketing Team)", "市场部员工持Palza会员号前往前台办理，必须出示员工工牌(核验市场部身份)"],
+    ["patron", "Procedure: FO will issue a blank Registration Card to MD TMs", "前台向市场部员工发放空白入住登记卡"],
+    ["patron", "Procedure: TM bring the Registration card to approach patrons to get and fill in the information", "市场部员工将登记卡交由客人填写以下资料"],
+    ["patron", "a.i. On RC: Patron's contact info (Any one of: address/email/social media contact)", "入住登记卡需收集：客人联络资料(地址/电子邮箱/社交账号任选其一)"],
+    ["patron", "a.ii. On RC: Patron's signature", "入住登记卡需收集：客人亲笔签名"],
+    ["patron", "b. Collect Valid Passport", "收取有效护照原件"],
+    ["patron", "c. Collect corresponding entry Arrival card (check valid period)", "收取对应入境申报表，并核验有效期"],
+    ["patron", "IF ANY one of the listed a, b & c are missing, hotel will refuse to issue key", "a、b、c任意一项资料缺失，酒店有权拒绝发放房卡"],
+    ["patron", "TM approach FO with all the docs stated in step 3 and FO will issue room key", "市场部员工备齐第3项全部资料交至前台，前台方可发放房卡"],
+    // ===== 免押金及开通/挂账服务标准 Waived Deposit =====
+    ["patron", "Waived Deposit and Open/Block Service Criteria - Table\nHotel property | Select waived deposit at Pega/Host Mobile | Required Deposit amount\nSands: X | NIL\nVenetian: X | NIL\nParisian: X | NIL\nCotai: X | NIL\nSt Regis: X | NIL\nLondoner Grand: X | NIL\nPalaza Grand: X | NIL\nLondoner Court: ✓ | 2K\nGrand Suites Four Seasons: ✓ | 1K\nFour Seasons: ✓ | 1K", "免押金及开通/挂账服务标准表\n酒店物业 | Pega/前台勾选免押金 | 押金金额\n金沙:X | 无需\n威尼斯人:X | 无需\n巴黎人:X | 无需\n科泰:X | 无需\n瑞吉:X | 无需\n伦敦人御匾汇:X | 无需\n御匾豪园:X | 无需\n伦敦人公馆:✓ | 2千\n四季大酒店套房:✓ | 1千\n四季酒店:✓ | 1千"],
+    ["patron", "Hotel property: 酒店物业\nSelect waived deposit at Pega/Host Mobile: 在Pega/前台移动端勾选免押金\nRequired Deposit amount: 需收取押金金额\nNIL: 无需收取", "酒店物业、Pega/前台勾选免押金、需收取押金金额，三栏对照；NIL即无需收取"],
+    ["patron", "Waived Deposit with block / Open Services Criteria: Based on 3/6 months ADT (日均赌台消费额)", "免押金+开通挂账服务分级标准：按近3/6个月日均赌台消费额判定"],
+    ["patron", "Palza (Apex) member: Waive deposit regardless of ADT. Open service up to 2K (Platinum), 3K (Diamond), 5K (Chairman) outstanding per night. Chairman up to 10K. Subject to ADT table.", "Palza(Apex)会员无论日均消费均可免押金；每晚挂账额度：铂金卡2千、钻石卡3千、主席卡5千；主席卡单日挂账上限1万；实际挂账额度需参照日均消费表"],
+    ["patron", "HEADT below 10K: Approved by AD (resident executive) with block service", "日均消费1万以下：需副总监(驻店高管)审批方可开通挂账"],
+    ["patron", "HEADT 10K or above: No posting to Rooms if deposit waived. If patron paid deposit upfront, posting allowed based on deposit.", "日均消费1万及以上：办理免押金不可客房挂账；如客人预先支付押金，可按押金金额开通挂账"],
+    ["patron", "HEADT 50K or above: Waive deposit with open services up to 5K outstanding charge per night stay", "日均消费5万及以上：可免押金，每晚挂账上限5千"],
+    ["patron", "HEADT 100K or above: Waive deposit with open services up to 10K outstanding charge per night stay", "日均消费10万及以上：可免押金，每晚挂账上限1万"],
+    ["patron", "Criteria Note: Only applicable to patrons assigned with a rep code. Exception need Director or above approval. (apply to all properties inclusive suite)", "仅适用于绑定专属销售代码的客人。特殊情况需总监及以上审批。全物业(含套房)通用"],
+    ["patron", "For F&B outlet posting to rooms: only Palza (Apex) patrons may post to room", "餐饮消费客房挂账仅限Palza(Apex)会员"],
+    // ===== 客房挂账权限表 Charge to Room =====
+    ["patron", "Charge to Room Table (客房挂账权限表)\nCARD TIER | F&B Outlets | SPA, ISD, Laundry, In Room\nPalza (apex): Y | Y\nDiamond: Y | Y\nRuby and Below: N | Based on ADT Chart\nY = Allowed, N = Not allowed", "客房挂账权限表\n会员等级 | 餐饮消费 | 水疗/长途/洗衣/客房内消费\nPalza顶级会员: 允许 | 允许\n钻石会员: 允许 | 允许\n红宝石及以下: 禁止 | 按日均消费表判定\nY=允许挂账，N=禁止挂账"],
+    ["patron", "Londoner Court and David Beckham Suites open room service based on the following criteria:", "伦敦人公馆及大卫贝克汉姆套房客房挂账参照以下标准执行"],
+    // ===== PALZA ADT额度表 =====
+    ["patron", "PALZA (Apex, Diamond, Chairman) ADT Daily Limit Table\nHK ADT 100K or above: $25K Daily\nHK ADT 50K or above: $10,000 Daily\nHK ADT 30K or above: $5,000 Daily\nHK ADT 10K or above: $3,000 Daily\nHK ADT 10K or below: $1,000 Daily", "铂尊会员(顶级/钻石/主席)日均赌额每日额度表\n近半年日均赌额10万港币及以上：每日额度25,000港币\n近半年日均赌额5万港币及以上：每日额度10,000港币\n近半年日均赌额3万港币及以上：每日额度5,000港币\n近半年日均赌额1万港币及以上：每日额度3,000港币\n近半年日均赌额1万港币以下：每日额度1,000港币"],
+    // ===== 远期预订 Future Booking =====
+    ["patron", "Future Booking a): Complimentary room or GOA: Two trips booking is allow; Included on day booking", "远期预订a)：免费房或自有账户挂账房：允许一次性预订两趟行程，当日预订同步计入限额"],
+    ["patron", "Future Booking b): Point deduction or SR redemption items: No limitation", "远期预订b)：积分抵扣、服务礼遇兑换项目：无次数限制"],
+    ["patron", "Future Booking c): Points cannot be refunded if patrons wants to cancel the reservation", "远期预订c)：客人取消预订，已扣积分不予退还"],
+    ["patron", "Future Booking d): ADT 50K or above can seek ED or above approval if the future booking over 2 trips", "远期预订d)：日均赌额5万港币以上客人，如需预订超过两趟行程，须行政总监及以上审批"],
+    // ===== 积分兑换 Point Redemption =====
+    ["patron", "Point Redemption: (PS, VE, CN, SR, SANDS) LON only accept CN/SR booking", "积分兑换适用物业：巴黎人、威尼斯人、伦敦人中区、金沙；伦敦人仅接受中区/服务礼遇渠道预订"],
+    ["patron", "Point Redemption a): In-house - redemption slip + guest signature", "积分兑换a) 住店兑换：兑换单据 + 客人亲笔签名"],
+    ["patron", "Point Redemption b): Pre-booking - Guest SMS/Whatsapp print screen of text message (send to share service) + redemption slip", "积分兑换b) 远期预订：客人短信/WhatsApp截图(上传共享系统留底) + 兑换单据"],
+    ["patron", "Point Redemption c): GUI: Incentive Point Redemption > VRM > Deduct points", "积分兑换c) 系统操作路径：奖励积分兑换模块 > 贵宾管理档案 > 扣除积分"],
+    ["patron", "Point Redemption d): ADT 50K or above can seek ED or above approval if the future booking over 2 trips", "积分兑换d)：日均赌额5万港币以上客人，远期预订超两趟行程需行政总监及以上审批"],
+    // ===== GOA Room Reservation =====
+    ["patron", "Room Reservation for Guest Own Account (GOA) (938++ / 1788++) or normal matrix", "客人自有账户付费房预订(GOA账户代码938/1788开头)或常规房价矩阵"],
+    ["patron", "GOA a): Contact Share Services to check available GOA rooms", "GOA a)：联系共享服务部查询可预订GOA房型库存"],
+    ["patron", "GOA b): For patrons who cannot meet the complimentary room criteria", "GOA b)：适用于未达到免费房申领标准的客人"],
+    ["patron", "GOA c): For loyal high-value patrons who need extra rooms but insufficient comp/limo/SR promotion points", "GOA c)：额外需要多间客房但免费房/礼车礼遇积分不足的高端忠诚客户"],
+    ["patron", "GOA d): Deposit required - collect room charge and deposit at check-in. If patron did not earn enough points, collect full GOA room charge at check-out", "GOA d)：入住须支付房费及押金；若客人积分未达标，退房时收取全额GOA房费"],
+    ["patron", "Back comp: Back comp issued on check-out date of previous trip. Subject to whether theo of that trip covers the room charge. TM must contact Share Service to follow up GOA status.", "回溯免费房：于上一趟行程退房日补录免费房额度。视该趟行程理论赢额是否足以覆盖房费。客户主任需自行对接共享服务跟进GOA订单状态"],
+    ["patron", "PL/PC/New Sign Up > need to notify AM/M (Macau ID no need app)", "贵宾/普通会员/新注册客户需通知客户经理；持澳门身份证客人无需申请审批"],
+    // ===== 餐饮 F&B =====
+    ["patron", "F&B a) My Wallet: GUI - Rev Center: DW0-Sands, DW1-VE, DW2-Plaza, DW3-PA, DW4-LON & LG (SCL F&B)", "餐饮a) 电子钱包：系统路径为奖励中心；适用物业：金沙/威尼斯人/铂尊/巴黎人/伦敦人/金光大道(共享服务餐饮额度)"],
+    ["patron", "F&B Balance: Patron can check on SR APP under F&B Balance. TM can check on RIS and MIP under My-wallet. Validate: 1 day + 3 days 05:59am. Deduction = bill amount.", "餐饮余额：客人可在礼遇APP查询；员工可在RIS/MIP系统我的钱包查看。有效期：当日起+3天凌晨5:59，扣减金额以账单实收为准"],
+    ["patron", "F&B b) Comp Slip: Issue comp slip on GUI - Rev Center: Counter code. Taken comp slip to patron to outlet restaurant to settle the bill.", "餐饮b) 免费餐饮单据：于系统奖励中心开具，填写柜台代码。将免费单据交予客人至对应餐厅核销结账"],
+    ["patron", "F&B Comp Slip Merchants: LON-TaiEr / LON-HaiDiLao / LON-JinYueXuan / LON-HipSeng / LON-TimHoWan", "免费餐饮单据适用商户：伦敦人泰尔、海底捞、金悦轩、协成、添好运"],
+    // ===== 轿车 Limo =====
+    ["patron", "Limo a) Card Tier Benefit: D2 - 4 One-way | D3 - Unlimited | Palza (Apex) - Unlimited (Rolls Royce)", "轿车a) 会员礼车权益：D2级4次单程礼车；D3级不限次；铂尊顶级会员不限次(含劳斯莱斯)"],
+    ["patron", "Limo b) Local Limo: Input data in Limousine Management System / My Limo", "轿车b) 本地礼车：于礼车管理系统/我的礼车模块录入订单"],
+    ["patron", "Limo c) Outsource Limo: D1-3, Palza (Apex) card only. Q Comp Rev LM1, Posting Date = Limo usage date (Arrival date)", "轿车c) 外包礼车：仅D1/D2/D3/铂尊顶级会员可申请。免费礼车记账代码LM1，记账日期=礼车使用日期(抵澳当日)"],
+    ["patron", "Limo d) Standby Limo: Palza (Apex) card member only - ad-hoc usage (within 15Mins) and not for hire or hold", "轿车d) 待命礼车：仅限铂尊顶级会员，临时用车(15分钟内到场)，不可长租/预留"],
+    // ===== 穿梭巴士 One Bus / 船票 Ferry =====
+    ["patron", "One Bus (港珠澳穿梭跨境巴士): Limitation 4 Tickets per Gaming day. Out of above standard need AD approval.", "穿梭巴士限额：每位客人每日最多4张车票。超出限额需副总监审批"],
+    ["patron", "Ferry a) Cotal Water Jet: MAC <> HK (Sheung Wan)", "船票a) 金光飞航：澳门↔香港上环"],
+    ["patron", "Ferry b) Yue Tung Water Jet: MAC <> Shekou, Shenzhen Airport", "船票b) 喷射飞航：澳门↔蛇口、深圳机场"],
+    ["patron", "Ferry c) Turbo Water Jet: MAC <> HK (Sheung Wan), Shekou, Shenzhen Airport", "船票c) Turbo喷射船：澳门↔香港上环、蛇口、深圳机场"],
+    ["patron", "Ferry d) Limitation: Diamond 1 or above: 4 tickets, Ruby 2-3: 2 tickets, Gold/Ruby I: 2 tickets but need AM or above approval", "船票d) 每日限额：钻石及以上会员4张；红宝石2/3级2张；黄金/红宝石1级2张且需客户经理及以上审批"],
+    ["patron", "Ferry - How to send tickets to room: Concierge issue tickets > Luggage Dept deliver to room. Provide room number and guest full name.", "船票送房流程：礼宾部出票后交由行李部送房，需提供客房号与客人全名"]
 ];
 
 // 加 id 與默認 favorite=false
