@@ -447,18 +447,135 @@
             background: #33335c;
             box-shadow: 0 0 0 2px #4fc3f7;
         }
+        /* 測試模式 */
+        .quiz-section { display: none; }
+        .quiz-section.active { display: block; }
+        .quiz-card {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 22px;
+            text-align: center;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .quiz-label {
+            font-size: 14px;
+            color: #4fc3f7;
+            font-weight: 600;
+        }
+        .quiz-score {
+            font-size: 14px;
+            color: #ffd54f;
+        }
+        .quiz-progress {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 18px;
+        }
+        .quiz-eng-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e1e32;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 24px;
+        }
+        .quiz-eng {
+            flex: 1;
+            font-size: 20px;
+            color: #81d4fa;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .quiz-speak {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #4fc3f7;
+            background: transparent;
+            color: #4fc3f7;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: auto;
+            flex: none;
+        }
+        .quiz-speak:active {
+            background: rgba(79,195,247,0.2);
+            transform: scale(0.9);
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .quiz-opt {
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: #1e1e32;
+            color: #ddd;
+            font-size: 16px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .quiz-opt:active { opacity: 0.7; }
+        .quiz-opt.correct {
+            background: #1b5e20;
+            border-color: #4caf50;
+            color: #fff;
+        }
+        .quiz-opt.wrong {
+            background: #5f1b1b;
+            border-color: #f44336;
+            color: #fff;
+        }
+        .quiz-opt.disabled { pointer-events: none; }
+        .quiz-feedback {
+            font-size: 15px;
+            min-height: 24px;
+            margin-bottom: 14px;
+            color: #ffd54f;
+        }
+        .quiz-next {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #0288d1;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .quiz-next:active { transform: scale(0.97); opacity: 0.85; }
+        .quiz-next.hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1 class="title">Floor Operation 中英文对照学习</h1>
-        <p class="tip">点星收藏 · 滑动调速 · 自动循环 · 跟读高亮</p>
+        <p class="tip">点星收藏 · 滑动调速 · 自动循环 · 跟读高亮 · 测试答题</p>
     </div>
 
     <div class="tab-bar">
         <div class="tab active" data-tab="vocab">📖 單詞</div>
         <div class="tab" data-tab="people">👥 人員</div>
         <div class="tab" data-tab="phone">📞 電話</div>
+        <div class="tab" data-tab="quiz">✍️ 測試</div>
     </div>
 
     <div class="vocab-section" id="vocabSection">
@@ -513,6 +630,23 @@
     <div class="phone-section" id="phoneSection">
         <input class="phone-search" id="phoneSearch" type="text" placeholder="🔍 搜索部门、号码或关键词…" autocomplete="off">
         <div id="phoneContainer"></div>
+    </div>
+
+    <div class="quiz-section" id="quizSection">
+        <div class="quiz-card">
+            <div class="quiz-header">
+                <span class="quiz-label">✍️ 測試模式</span>
+                <span class="quiz-score" id="quizScore">✅ 0  &nbsp;❌ 0</span>
+            </div>
+            <div class="quiz-progress"><span id="quizProgress">0 / 0</span></div>
+            <div class="quiz-eng-wrap">
+                <div class="quiz-eng" id="quizEng"></div>
+                <button class="quiz-speak" id="quizSpeakBtn" title="朗读英文">🔊</button>
+            </div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+            <button class="quiz-next" id="quizNextBtn">下一題 ➡</button>
+        </div>
     </div>
 
     <script>
@@ -762,7 +896,125 @@ const RAW = [
     ["patron", "Ferry b) Yue Tung Water Jet: MAC <> Shekou, Shenzhen Airport", "船票b) 喷射飞航：澳门↔蛇口、深圳机场"],
     ["patron", "Ferry c) Turbo Water Jet: MAC <> HK (Sheung Wan), Shekou, Shenzhen Airport", "船票c) Turbo喷射船：澳门↔香港上环、蛇口、深圳机场"],
     ["patron", "Ferry d) Limitation: Diamond 1 or above: 4 tickets, Ruby 2-3: 2 tickets, Gold/Ruby I: 2 tickets but need AM or above approval", "船票d) 每日限额：钻石及以上会员4张；红宝石2/3级2张；黄金/红宝石1级2张且需客户经理及以上审批"],
-    ["patron", "Ferry - How to send tickets to room: Concierge issue tickets > Luggage Dept deliver to room. Provide room number and guest full name.", "船票送房流程：礼宾部出票后交由行李部送房，需提供客房号与客人全名"]
+    ["patron", "Ferry - How to send tickets to room: Concierge issue tickets > Luggage Dept deliver to room. Provide room number and guest full name.", "船票送房流程：礼宾部出票后交由行李部送房，需提供客房号与客人全名"],
+    // ===== 新增：赠码用途分类、演唱会、SPA、礼遇分类、兑换规范 =====
+    ["comp", "1. Event - Issued comp slip: Comp Description: Show", "活动类 - 开具赠码单据，赠码用途填写：演出"],
+    ["comp", "e.g. Thriller", "示例：《惊悚夜》演出"],
+    ["comp", "2. Entertainment - Issued comp slip with comp description: Event", "文娱活动 - 开具赠码单据，赠码用途填写：活动"],
+    ["comp", "PA - 水世界；PA - 艾菲爾鐵塔；PA-Q 立方王國，VE-teamLab 超自然空間", "巴黎人水世界、巴黎人埃菲尔铁塔、巴黎人 Q 立方王国、威尼斯人 teamLab 超自然空间"],
+    ["comp", "二、演唱会审批规则 Concert Approval Rules", ""],
+    ["comp", "a) Base on Fact Sheet ADT, AWT and Approval guideline.", "依据客户资料表内日均赌额、平均游玩时长及审批标准执行"],
+    ["comp", "b) AM/M need to input data in PEGA, additional tickets (seek for approval)", "客户经理需在 PEGA 系统录入资料，额外加购门票必须申请审批"],
+    ["comp", "c) Hit record link in RS", "在礼遇系统打开记录链接"],
+    ["comp", "d) Outside Concert ticket issuance flow", "场外演唱会门票发放流程"],
+    ["comp", "三、SPA 水疗场地说明 SPA Venue Description", ""],
+    ["comp", "SPA: V 藝生 (SF), FS 水療中心 (4F), ON-CN Bodhi 菩提 (Conrad 3rd), 名匯水療 (貝凱 3 樓 3R), SD Iridium 鈽瑞芳 (St. Regis 38/F), Sands 御園會水療中心 (8F), PA (Le SPA 麗舍 6F), 鑽匯匯", "SF 维艺生水疗、FS 四楼水疗中心、康莱德三楼菩提水疗、贝凯三楼名汇水疗、瑞吉 38 楼钽瑞芳水疗、金沙八楼御园会水疗、巴黎人六楼丽舍 SPA、钻汇汇水疗"],
+    ["comp", "**PL/PC can issue comp slip base on theo x 0.22% if have enough mass gaming, no app needed", "铂金 / 钻石会员，若博彩流水充足，可按理论赢额 0.22% 开具水疗赠码，无需审批"],
+    ["comp", "四、礼遇兑换分类规则 Redemption Category Rules", ""],
+    ["comp", "Ongoing Promotion - Earn&Get, AYCC, NSU offer, CWJ & Bus ticket offer, Birthday offer, Wechat Binding offer, Mall offer", "常规长期活动：消费回馈活动、AYCC 会员活动、新客礼遇、CWJ 巴士票优惠、生日礼遇、微信绑定福利、商场消费活动"],
+    ["comp", "Upgrade transportation and Limo offer", "交通升级、礼车专属礼遇"],
+    ["comp", "Overlap Promotion", "多重活动叠加"],
+    ["comp", "Tournament", "赛事活动"],
+    ["comp", "Upgrade Gift for Paiza (Apex) Only", "仅铂尊顶级会员适用礼品升级"],
+    ["comp", "Collection", "礼品兑换"],
+    ["comp", "**PL/PC - Point Balance deduction: no app needed", "铂金 / 钻石会员扣除积分余额，无需审批"],
+    ["comp", "-Promotion Redeem: no app needed, if under AYCC base on Diamond 1", "活动礼遇兑换：钻石一级及以下 AYCC 会员兑换无需审批"],
+    ["comp", "E-wallet expire date: PC & F&B: 1+3 days 05:59am, RD& SB: 1+7 days 05:59am", "电子钱包有效期：钻石会员 / 餐饮额度：当日起 3 日凌晨 5 点 59 分；客房 / 礼遇单据：当日起 7 日凌晨 5 点 59 分"],
+    ["comp", "五、兑换单据操作规范 Redemption Slip Operation", ""],
+    ["comp", "1. 超额兑换操作流程 - For overriding transactions for patrons:", ""],
+    ["comp", "a) Sales obtain verbal approval from Director or above", "销售团队先取得总监及以上管理人员口头审批"],
+    ["comp", "b) PS team AM/M send SMS to the said Director or above with main duty, to obtain reply with approval.", "贵宾客户经理向对应总监及以上发送短信说明事由，取得审批回复"],
+    ["comp", "c) Proceed with pre-issuing RS slips for patrons", "为客人预先开具兑换单据"],
+    ["comp", "d) Issue SB in SR App, the exchange slip will be automatically printed at the designated counter printer", "在礼遇 APP 开具礼遇单据，兑换单据会在指定柜台打印机自动打印"],
+    ["comp", "2. 兑换单据超额 1 万港币签名要求 Over $10k Signature on Redemption Slip", ""],
+    ["comp", "PC: 1st Host ✓, 2nd Host ✓, AM or above ✓, management authorize ✓", "PC 钻石会员：经办客户经理、第二客户经理、客户经理及以上、管理层授权（走授权流程时）"],
+    ["comp", "RD: 1st Host ✓, 2nd Host ✓, AM or above ✓, management authorize ✓", "RD 客房礼遇：经办客户经理、第二客户经理、客户经理及以上、管理层授权（走授权流程时）"],
+    ["comp", "Gifts: 1st Host ✓, 2nd Host ✓, AM or above ✓, management authorize ✓", "Gifts 礼品：经办客户经理、第二客户经理、客户经理及以上、管理层授权（走授权流程时）"],
+    ["comp", "Slot Bonus: 1st Host ✓, 2nd Host ✓, AM or above ✓, management authorize ✓", "Slot Bonus 老虎机赠码：经办客户经理、第二客户经理、客户经理及以上、管理层授权（走授权流程时）"],
+    ["comp", "SB Digital redemption: 1st Host ✓, 2nd Host ✓, AM or above ✓, management authorize ✓", "SB Digital redemption 电子礼遇兑换：经办客户经理、第二客户经理、客户经理及以上、管理层授权（走授权流程时）"],
+    ["comp", "3. 柜台兑换单据签名标准 Redemption SB at SR Counter", ""],
+    ["comp", "a) SB: when the amount over 10k, need issued host & PMS on duty AM/M signature & Table/Slot on duty manager signature", "礼遇单据金额超 1 万港币：需经办客户经理、当班销售主管、桌台 / 老虎机当班经理三方签名"],
+    ["comp", "b) SB: when the amount over 50k, need issue by PMS duty AM & Second AM/M signature & Table/Slot on duty manager signature", "礼遇单据金额超 5 万港币：当班销售主管、第二位客户经理、桌台 / 老虎机当班经理三方签名开具"],
+    ["comp", "c) PC: when the amount over 10k, only need the issue host signature", "钻石会员兑换金额超 1 万港币，仅需经办客户签名"],
+    ["comp", "d) gift: when the amount over 10k, only need the issue host and AM/M signature", "礼品兑换金额超 1 万港币，需经办客户经理 + 客户经理签名"],
+    // ===== 新增：餐饮场地、船票兑换规则、扣/不扣积分流程 =====
+    ["comp", "一、餐酒类 F&B / Ferry / Breakfast / Afternoon Tea / Banquet", ""],
+    ["comp", "ISL/Canalao/Vista 38 [For GSP patron]", "ISL / 金光运河、维塔 38 楼（仅适用于 GSP 贵宾）"],
+    ["comp", "Londoner Court: The Residence (stay in LON, D1 (ADT15K+) breakfast, D2 & above - Full access), The Kensington 36 Floor (D2 & above)", "伦敦人公馆・御居（入住伦敦人、近半年日均赌额 15 万以上 D1 级含早餐；D2 及以上客层全权限）、肯辛顿 36 楼（D2 及以上）"],
+    ["comp", "Londoner Hotel and Conrad: Churchill's Table / St Regis: The Manor", "伦敦人酒店、康莱德・丘吉尔餐台、瑞吉・庄园餐厅"],
+    ["comp", "Londoner Grand: Hampton Court, in suite dining.", "伦敦人大观・汉普顿会所、套房内用餐"],
+    ["comp", "PA: Imperial Bistro / Emerald House / Le Buffet", "巴黎人・御膳小馆、翠华轩、丽景自助餐"],
+    ["comp", "Londoner Court / Milan Ballroom / Paiza lounge", "伦敦人公馆、米兰宴会厅、铂尊贵宾厅"],
+    ["comp", "Sands: Moonlight", "金沙・月光廊"],
+    ["comp", "船票兑换规则及额度表 - Category, Weekly Free Offer, Paiza (Apex), Diamond, Ruby, Gold, Remark", "分类、每周免费额度、铂尊顶级、钻石、红宝石、黄金、备注"],
+    ["comp", "Daily Free Offer - Paiza(Apex): 4 tickets / 4 tickets; Diamond: 2 tickets / 4 tickets; Ruby: 2 tickets / 2 tickets; Gold: 1 ticket / 2 tickets", "每日免费票：铂尊 4 张、钻石 2 张、红宝石 2 张、黄金 1 张"],
+    ["comp", "Cash charge / Extra - Paiza(Apex): 4 tickets / day; Diamond: 2 tickets / day; Ruby: 1 ticket / day; Gold: 1 ticket / day", "超额付费票：铂尊每日 4 张、钻石每日 2 张、红宝石每日 1 张、黄金每日 1 张"],
+    ["comp", "Limit per trip - Paiza (Apex): 15 pcs / 1 ticket; Diamond: 15 pcs / 1 ticket; Ruby: 1 ticket / day; Gold: 1 ticket / day", "单次行程上限：铂尊 / 钻石 15 张，红宝石 / 黄金每日 1 张"],
+    ["comp", "二、Promo 积分兑换船票表格 - Tier Benefit, Daily Free, Extra Charge, All members quota", "客层福利、每日免费额度（每博彩日）、付费加购额度（每博彩日）、全会员总限额"],
+    ["comp", "Gold: 3 pts = 1 ticket", "黄金会员：3 积分兑换 1 张船票"],
+    ["comp", "Ruby: 2 tickets", "红宝石会员：2 张免费票"],
+    ["comp", "Diamond: 9 pts = 1 ticket (deduct 18 promo pts)", "钻石会员：9 积分 1 张，扣减 18 推广积分"],
+    ["comp", "Paiza (Apex): 35 pts = 1 ticket (deduct 70 promo pts)", "铂尊顶级会员：35 积分 1 张，扣减 70 推广积分"],
+    ["comp", "unlimited with limo ticket and transportation offer & one bus offer", "搭配礼车、交通礼遇、穿梭巴士套餐无兑换上限"],
+    ["comp", "2 tickets", "2 张票"],
+    ["comp", "30 promo pts = 1 ticket", "30 推广积分兑换 1 张"],
+    ["comp", "2 tickets per day", "每日 2 张"],
+    ["comp", "up to 7 days / 15 days", "有效期 7/15 天"],
+    ["comp", "all members quota 1 ticket per trip (max 20 promo pts)", "全会员单次行程上限 1 张，最高扣 20 推广积分"],
+    ["comp", "三、分两大流程：扣积分 / 不扣积分", ""],
+    ["comp", "1) 扣积分（推广活动兑换船票，必须通知客户经理 AM/M）", ""],
+    ["comp", "a) Check available points and latest trip record", "核查可用积分及客人最新行程记录"],
+    ["comp", "b) GUI: Incentive Point Redemption > Cotal Travel > Deduct points", "系统操作路径：奖励积分兑换→金光旅游→扣减积分"],
+    ["comp", "c) 复印单据留存，打印兑换单，交由客户经理发送邮件至交通部 CTL", "文件影印存档，打印兑换单据，交由客户经理发送邮件至交通组 CTL"],
+    ["comp", "d) For Front Transportation Offer / Earned comp / Apex 1 来回亚洲商务免费船票", "前台交通礼遇、消费回馈赠码、铂尊一级客户：往返亚洲商务舱免费船票"],
+    ["comp", "e) 通知公关部（Code Sales）", "通知销售公关部（代码销售组）"],
+    ["comp", "f) 金光旅行社确认优惠及额度（销售 / 贵宾部 PS）", "金光旅行社核对优惠额度，由销售或贵宾部对接"],
+    ["comp", "g) For Earn comp & Apex benefit: Sales will obtain email approval", "消费赠码、铂尊权益兑换：销售需取得邮件审批"],
+    ["comp", "h) For Trans Offers: Sales need to approach PS to hit redemption link before approach Sale support to send e-mail to CTL", "交通礼遇兑换：销售先对接贵宾部打开兑换链接，再联系销售支持发邮件至交通组"],
+    ["comp", "2) 不扣积分（前台交通礼遇兑换免费船票）", ""],
+    ["comp", "a) 符合以下资格者，无需电子审批，否则需物业主管审批", "满足下述条件无需线上审批；不达标则需物业负责人审批"],
+    ["comp", "b-1) 达标：ADT 11 万以上标准", "达标条件：近半年日均赌额 11 万及以上，按标准放行"],
+    ["comp", "b-2) 达标：Theo 0.22% 或无黑单客 15% 内，符合赠码标准", "达标条件：理论赢额 0.22%，或无负面记录客人 15% 额度内，满足赠码发放标准"],
+    ["comp", "b-1) pick up slip: based last trip record (客人已有本次行程则按当前行程记录)", "取票单据：参考上一趟行程记录；若客人已在住，按本次行程记录核算"],
+    ["comp", "3) 伦敦人部门确认是否有车位 / 船票配额", "伦敦人所属部门核对车船库存配额"],
+    // ===== 新增：赌区柜台、外带规则、私人赌台、老虎机预留、前台存款、电汇 =====
+    ["comp", "赌区兑换柜台规则 Cash Exchange Counter Rules", ""],
+    ["comp", "a) LON / LG Casino & Paiza Apex Area - Patron redeem slip/cash/chips to PC/chips/cash (no limited) by Cage colleague who sit in pit.", "伦敦人 / 伦敦人公馆赌场及铂尊顶级贵宾区：客人可凭兑换单、现金、筹码，在赌区柜台职员处兑换钻石会员额度、筹码、现金，无额度限制。"],
+    ["comp", "b) Cash to TITO - HL Slot (Threshold HKD50K or above)", "现金兑换老虎机票券（高限额机型），门槛五万港币及以上"],
+    ["comp", "御膳会餐区外带食物和酒類（免费或积分兑换）", ""],
+    ["comp", "1 餐饮", ""],
+    ["comp", "a) Only D1-D3 and Paiza (Apex) patrons can take away food.", "仅钻石 1 至 3 级、铂尊顶级会员可外带食物"],
+    ["comp", "b) Staff can only help guests order food, cannot help take away. (If take away needed, AM/M approval & signature required)", "员工仅可协助客人点餐，不可帮忙外带；如需外带，须客户经理审批并签名"],
+    ["comp", "2 酒类", ""],
+    ["comp", "a) Unsealed wine bottles / luxury liquor only for on-site consumption.", "未开封酒水、名贵酒品仅限场内饮用"],
+    ["comp", "b) Take away unconsumed wine bottles / luxury liquor needs approval from Executive Director or above.", "未喝完酒水、名贵酒品如需外带，须执行董事及以上管理人员审批"],
+    ["comp", "c) After approval, fill in form 'Authorization form for Bottle-Takeaway'.", "获批后，填写《酒水外带授权申请表》"],
+    ["comp", "d) Scan authorization letter to casino finance department, copy send to approving management (Director or above), original document stored in Audit box.", "扫描授权文件发送赌场财务部，副本交审批管理层（总监及以上），原件存放审计收纳箱"],
+    ["comp", "Private Table Reserve Policy 私人赌台预订规则", ""],
+    ["comp", "1a) Private table requirements: capital 1M HKD (weekday); 2M HKD (weekend)", "私人赌台资金门槛：工作日 100 万港币，周末 200 万港币"],
+    ["comp", "1b) Private room requirements: capital 2M HKD (weekday); 3M HKD (weekend)", "私人包间资金门槛：工作日 200 万港币，周末 300 万港币"],
+    ["comp", "2) Get Director or above verbal approval", "须取得总监及以上管理人员口头审批"],
+    ["comp", "3) Private table only for Diamond, Private Room, LG Apex area", "私人赌台仅限钻石会员；私人包间仅限伦敦人公馆铂尊顶级贵宾区使用"],
+    ["comp", "4) Hold card only 8 hours, if extend need inform AM/M", "赌台预留权限仅 8 小时，如需延长必须通知客户经理"],
+    ["comp", "Slot Machine Reserve Policy (Non-Link Jackpot Machine Only) 老虎机预留规则（仅限非联动彩金机型）", ""],
+    ["comp", "Diamond - Venetian: active play 24hrs reserve 2 units, max to 7 days after trip; Londoner: slot play 24hrs 1000pts reserve 1 unit, max 2 units; 1st approval: Marketing 1-30 days; 2nd approval: Slot Director 1-30 days", "钻石会员：威尼斯人有 24 小时活跃流水可预留 2 部最长至行程结束后 7 天；伦敦人 24 小时投注 1000 分可预留 1 部每场最多 2 部；一级特殊审批市场部 1-30 天；二级特殊审批贵宾总监 1-30 天"],
+    ["comp", "Paiza (Apex) - Venetian: reserve 2 units, max to 7 days after trip; Londoner: slot play 24hrs 1000pts reserve 1 unit, max 2 units", "铂尊 Apex：威尼斯人可预留 2 部最长至行程结束后 7 天；伦敦人 24 小时投注 1000 分可预留 1 部每场最多 2 部"],
+    ["comp", "Paiza High (Apex High) - Venetian: reserve 3 units within 20 days; Londoner: reserve 2 units, max to 7 days after trip", "铂尊高阶 Apex High：威尼斯人可预留 3 部 20 天有效；伦敦人可预留 2 部最长至行程结束后 7 天"],
+    ["comp", "Remark: 同一贵宾名下老虎机预留总数不得超过该区域老虎机总数 10%；所有预留机位不包括私人包间及高级贵宾专属老虎机；行程结束后须在预留机器上更新投注记录", "同一贵宾名下老虎机预留总数不得超过该区域总数 10%；不包括私人包间及高级贵宾专属机；行程结束后须更新投注记录"],
+    ["comp", "2) Call Slot Attendant and M/AM", "呼叫老虎机服务员及当班客户经理"],
+    ["comp", "3) The last decision is by Slot Team", "最终决定权归老虎机管理团队"],
+    ["comp", "Front Money (TBC) 前台存款（待确认细则）", ""],
+    ["comp", "1) Check record in PEGA system", "在 PEGA 系统查询存款记录"],
+    ["comp", "2) All member cards can deposit funds, no interest provided", "所有会员账户均可存入前台存款，不计利息"],
+    ["comp", "前台存款超 5 万港币规则:", ""],
+    ["comp", "3.1) Inactive 180 days, need slot manager approval", "账户闲置 180 天，需老虎机部经理审批"],
+    ["comp", "3.2) Inactive 360 days, need Compliance approval", "账户闲置 360 天，需合规部审批"],
+    ["comp", "IT service 电汇服务（仅限私人账户→公司账户）", ""],
+    ["comp", "1 电汇至公司账户条件:", ""],
+    ["comp", "a) Guest must be our Sands member.", "客人必须为本金沙集团会员"],
+    ["comp", "b) Guest must own bank account outside mainland China.", "客人需持有中国大陆以外地区银行账户"],
+    ["comp", "c) Wire transfer to one of designated banks", "电汇至指定银行之一"],
+    ["comp", "d) Minimum transfer amount to designated bank: HKD 100,000", "转入指定银行单笔最低金额 10 万港币"]
 ];
 
 // 加 id 與默認 favorite=false
@@ -1314,11 +1566,100 @@ function renderPhone(filterText) {
 }
 document.addEventListener("input", e => { if (e.target.id === "phoneSearch") renderPhone(e.target.value.trim()); });
 
-// ===================== 10. Tab 切換 =====================
+// ===================== 10. 測試模式（日期學習：月份、星期几） =====================
+const DATE_QUIZ = [
+    { en: "January",   zh: "一月" },
+    { en: "February",  zh: "二月" },
+    { en: "March",     zh: "三月" },
+    { en: "April",     zh: "四月" },
+    { en: "May",       zh: "五月" },
+    { en: "June",      zh: "六月" },
+    { en: "July",      zh: "七月" },
+    { en: "August",    zh: "八月" },
+    { en: "September", zh: "九月" },
+    { en: "October",   zh: "十月" },
+    { en: "November",  zh: "十一月" },
+    { en: "December",  zh: "十二月" },
+    { en: "Monday",    zh: "星期一" },
+    { en: "Tuesday",   zh: "星期二" },
+    { en: "Wednesday", zh: "星期三" },
+    { en: "Thursday",  zh: "星期四" },
+    { en: "Friday",    zh: "星期五" },
+    { en: "Saturday",  zh: "星期六" },
+    { en: "Sunday",    zh: "星期日" }
+];
+let quizData = { correct: 0, wrong: 0, total: 0, current: null, options: [], answered: false };
+function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+function quizSpeak(text) {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.7;
+    speechSynthesis.speak(u);
+}
+function loadQuiz() {
+    const quizEng = $("quizEng"), quizOptions = $("quizOptions"), quizFeedback = $("quizFeedback");
+    const quizNextBtn = $("quizNextBtn"), quizScore = $("quizScore"), quizProgress = $("quizProgress");
+    if (!quizEng) return;
+    // 随机选当前题
+    quizData.current = DATE_QUIZ[Math.floor(Math.random() * DATE_QUIZ.length)];
+    // 生成 3 个干扰项（同类别：月配月，星期配星期）
+    const monthEndings = /ary$|ch$|il$|y$|ust$|ber$/;
+    const isMonth = monthEndings.test(quizData.current.en);
+    let pool = DATE_QUIZ.filter(d => d.en !== quizData.current.en && isMonth === monthEndings.test(d.en));
+    let distractors = shuffle(pool).slice(0, 3);
+    while (distractors.length < 3) {
+        const fb = DATE_QUIZ.filter(d => !distractors.includes(d) && d.en !== quizData.current.en);
+        if (fb.length === 0) break;
+        distractors.push(fb[Math.floor(Math.random() * fb.length)]);
+    }
+    quizData.options = shuffle([quizData.current, ...distractors]);
+    quizData.answered = false;
+    // 渲染
+    quizEng.textContent = quizData.current.en;
+    quizOptions.innerHTML = quizData.options.map((opt, i) =>
+        `<div class="quiz-opt" data-idx="${i}" data-zh="${opt.zh}">${opt.zh}</div>`
+    ).join("");
+    quizFeedback.textContent = "";
+    quizNextBtn.classList.add("hidden");
+    // 绑定选项点击
+    quizOptions.querySelectorAll(".quiz-opt").forEach(el => {
+        el.addEventListener("click", () => {
+            if (quizData.answered) return;
+            quizData.answered = true;
+            const chosen = el.dataset.zh;
+            const isCorrect = chosen === quizData.current.zh;
+            if (isCorrect) { quizData.correct++; el.classList.add("correct"); }
+            else { quizData.wrong++; el.classList.add("wrong"); }
+            quizOptions.querySelectorAll(".quiz-opt").forEach(oe => {
+                oe.classList.add("disabled");
+                if (oe.dataset.zh === quizData.current.zh) oe.classList.add("correct");
+            });
+            quizFeedback.textContent = isCorrect ? "✅ 正确！" : `❌ 错误！正确答案：${quizData.current.zh}`;
+            quizFeedback.style.color = isCorrect ? "#4caf50" : "#f44336";
+            quizScore.textContent = `✅ ${quizData.correct}  ❌ ${quizData.wrong}`;
+            quizData.total++;
+            quizProgress.textContent = `答 ${quizData.total} 题 · 正确率 ${Math.round(quizData.correct / quizData.total * 100)}%`;
+            quizNextBtn.classList.remove("hidden");
+        });
+    });
+}
+// 朗读按钮
+document.addEventListener("click", e => {
+    if (e.target.id === "quizSpeakBtn" && quizData.current) {
+        e.stopPropagation();
+        quizSpeak(quizData.current.en);
+    }
+});
+$("quizNextBtn").addEventListener("click", loadQuiz);
+
+// ===================== 11. Tab 切換 =====================
 const SECTIONS = {
     vocab:  { el: () => $("vocabSection"),  show: e => e.classList.remove("hidden"), hide: e => e.classList.add("hidden") },
     people: { el: () => $("peopleSection"), show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") },
-    phone:  { el: () => $("phoneSection"),  show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") }
+    phone:  { el: () => $("phoneSection"),  show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") },
+    quiz:   { el: () => $("quizSection"),   show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") }
 };
 document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -1330,10 +1671,11 @@ document.querySelectorAll(".tab").forEach(tab => {
             if (el) (key === tabName ? s.show : s.hide)(el);
         });
         if (tabName === "phone") renderPhone($("phoneSearch").value.trim());
+        if (tabName === "quiz") loadQuiz();
     });
 });
 
-// ===================== 11. iOS / 後台兼容 =====================
+// ===================== 12. iOS / 後台兼容 =====================
 // 首次进入尝试解锁 voices
 function unlockVoices() {
     if (!("speechSynthesis" in window)) return;
@@ -1351,7 +1693,7 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
-// ===================== 12. 初始化 =====================
+// ===================== 13. 初始化 =====================
 loadState();
 rebuildSelect();
 // 应用持久化设置
@@ -1364,6 +1706,7 @@ updateAutoUI();
 render();
 renderPeople();
 renderPhone();
+loadQuiz();
 unlockVoices();
 
 // Service Worker
