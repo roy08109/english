@@ -514,6 +514,27 @@
             background: rgba(79,195,247,0.2);
             transform: scale(0.9);
         }
+        .quiz-filter {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .quiz-filter .chip {
+            padding: 6px 14px;
+            border-radius: 16px;
+            background: #2d2d44;
+            color: #ccc;
+            font-size: 13px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quiz-filter .chip.active {
+            background: #0288d1;
+            color: #fff;
+            border-color: #4fc3f7;
+        }
         .quiz-options {
             display: flex;
             flex-direction: column;
@@ -563,6 +584,90 @@
         }
         .quiz-next:active { transform: scale(0.97); opacity: 0.85; }
         .quiz-next.hidden { display: none; }
+        /* 分析面板 */
+        .quiz-analysis-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .quiz-analysis-overlay.show { display: flex; }
+        .quiz-analysis-panel {
+            background: #24243b;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px 20px 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+        .quiz-analysis-panel h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            text-align: center;
+            color: #ffd54f;
+        }
+        .quiz-analysis-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: #2d2d44;
+            border-radius: 8px;
+        }
+        .quiz-analysis-item .qai-eng {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .quiz-analysis-item .qai-zh {
+            font-size: 13px;
+            color: #aaa;
+            margin-left: 8px;
+        }
+        .quiz-analysis-item .qai-count {
+            background: #f44336;
+            color: #fff;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .quiz-analysis-empty {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding: 20px 0;
+        }
+        .quiz-analysis-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .quiz-analysis-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quiz-analysis-actions button:active { transform: scale(0.97); opacity: 0.85; }
+        .qaa-reset {
+            background: #0288d1;
+            color: #fff;
+        }
+        .qaa-close {
+            background: #3a3a55;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -639,6 +744,11 @@
                 <span class="quiz-score" id="quizScore">✅ 0  &nbsp;❌ 0</span>
             </div>
             <div class="quiz-progress"><span id="quizProgress">0 / 0</span></div>
+            <div class="quiz-filter">
+                <span class="chip active" data-qcat="all">全部</span>
+                <span class="chip" data-qcat="month">月份</span>
+                <span class="chip" data-qcat="weekday">星期几</span>
+            </div>
             <div class="quiz-eng-wrap">
                 <div class="quiz-eng" id="quizEng"></div>
                 <button class="quiz-speak" id="quizSpeakBtn" title="朗读英文">🔊</button>
@@ -646,6 +756,17 @@
             <div class="quiz-options" id="quizOptions"></div>
             <div class="quiz-feedback" id="quizFeedback"></div>
             <button class="quiz-next" id="quizNextBtn">下一題 ➡</button>
+        </div>
+        <!-- 分析面板 -->
+        <div class="quiz-analysis-overlay" id="quizAnalysisOverlay">
+            <div class="quiz-analysis-panel">
+                <h3>📊 弱點分析</h3>
+                <div id="quizAnalysisBody"></div>
+                <div class="quiz-analysis-actions">
+                    <button class="qaa-reset" id="qaaReset">重新開始</button>
+                    <button class="qaa-close" id="qaaClose">關閉</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1568,27 +1689,28 @@ document.addEventListener("input", e => { if (e.target.id === "phoneSearch") ren
 
 // ===================== 10. 測試模式（日期學習：月份、星期几） =====================
 const DATE_QUIZ = [
-    { en: "January",   zh: "一月" },
-    { en: "February",  zh: "二月" },
-    { en: "March",     zh: "三月" },
-    { en: "April",     zh: "四月" },
-    { en: "May",       zh: "五月" },
-    { en: "June",      zh: "六月" },
-    { en: "July",      zh: "七月" },
-    { en: "August",    zh: "八月" },
-    { en: "September", zh: "九月" },
-    { en: "October",   zh: "十月" },
-    { en: "November",  zh: "十一月" },
-    { en: "December",  zh: "十二月" },
-    { en: "Monday",    zh: "星期一" },
-    { en: "Tuesday",   zh: "星期二" },
-    { en: "Wednesday", zh: "星期三" },
-    { en: "Thursday",  zh: "星期四" },
-    { en: "Friday",    zh: "星期五" },
-    { en: "Saturday",  zh: "星期六" },
-    { en: "Sunday",    zh: "星期日" }
+    { en: "January",   abbr: "Jan", zh: "一月",  cat: "month" },
+    { en: "February",  abbr: "Feb", zh: "二月",  cat: "month" },
+    { en: "March",     abbr: "Mar", zh: "三月",  cat: "month" },
+    { en: "April",     abbr: "Apr", zh: "四月",  cat: "month" },
+    { en: "May",       abbr: "May", zh: "五月",  cat: "month" },
+    { en: "June",      abbr: "Jun", zh: "六月",  cat: "month" },
+    { en: "July",      abbr: "Jul", zh: "七月",  cat: "month" },
+    { en: "August",    abbr: "Aug", zh: "八月",  cat: "month" },
+    { en: "September", abbr: "Sep", zh: "九月",  cat: "month" },
+    { en: "October",   abbr: "Oct", zh: "十月",  cat: "month" },
+    { en: "November",  abbr: "Nov", zh: "十一月", cat: "month" },
+    { en: "December",  abbr: "Dec", zh: "十二月", cat: "month" },
+    { en: "Monday",    zh: "星期一", cat: "weekday" },
+    { en: "Tuesday",   zh: "星期二", cat: "weekday" },
+    { en: "Wednesday", zh: "星期三", cat: "weekday" },
+    { en: "Thursday",  zh: "星期四", cat: "weekday" },
+    { en: "Friday",    zh: "星期五", cat: "weekday" },
+    { en: "Saturday",  zh: "星期六", cat: "weekday" },
+    { en: "Sunday",    zh: "星期日", cat: "weekday" }
 ];
-let quizData = { correct: 0, wrong: 0, total: 0, current: null, options: [], answered: false };
+let quizData = { correct: 0, wrong: 0, total: 0, current: null, options: [], answered: false, wrongCounts: {} };
+let quizCategory = "all";
 function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 function quizSpeak(text) {
     if (!("speechSynthesis" in window)) return;
@@ -1598,26 +1720,60 @@ function quizSpeak(text) {
     u.rate = 0.7;
     speechSynthesis.speak(u);
 }
+function showQuizAnalysis() {
+    const overlay = $("quizAnalysisOverlay");
+    const body = $("quizAnalysisBody");
+    if (!overlay || !body) return;
+    // 按错误次数排序，取前 10
+    const entries = Object.entries(quizData.wrongCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+    if (entries.length === 0) {
+        body.innerHTML = `<div class="quiz-analysis-empty">🎉 全部答对，没有薄弱项！</div>`;
+    } else {
+        body.innerHTML = `<div style="font-size:13px;color:#888;margin-bottom:10px;text-align:center;">答 ${quizData.total} 题 · 共錯 ${quizData.wrong} 次</div>` +
+        entries.map(([en, count]) => {
+            const item = DATE_QUIZ.find(d => d.en === en);
+            if (!item) return "";
+            const label = item.abbr ? `${item.en} (${item.abbr})` : item.en;
+            return `<div class="quiz-analysis-item">
+                <div><span class="qai-eng">${label}</span><span class="qai-zh">${item.zh}</span></div>
+                <span class="qai-count">錯 ${count} 次</span>
+            </div>`;
+        }).join("");
+    }
+    overlay.classList.add("show");
+}
+function resetQuizStats() {
+    quizData.correct = 0; quizData.wrong = 0; quizData.total = 0;
+    quizData.wrongCounts = {};
+    $("quizScore").textContent = "✅ 0  ❌ 0";
+    $("quizProgress").textContent = "0 / 0";
+}
 function loadQuiz() {
     const quizEng = $("quizEng"), quizOptions = $("quizOptions"), quizFeedback = $("quizFeedback");
     const quizNextBtn = $("quizNextBtn"), quizScore = $("quizScore"), quizProgress = $("quizProgress");
     if (!quizEng) return;
+    // 按类别筛选题库
+    const pool = quizCategory === "all" ? DATE_QUIZ : DATE_QUIZ.filter(d => d.cat === quizCategory);
+    if (pool.length === 0) return;
     // 随机选当前题
-    quizData.current = DATE_QUIZ[Math.floor(Math.random() * DATE_QUIZ.length)];
-    // 生成 3 个干扰项（同类别：月配月，星期配星期）
-    const monthEndings = /ary$|ch$|il$|y$|ust$|ber$/;
-    const isMonth = monthEndings.test(quizData.current.en);
-    let pool = DATE_QUIZ.filter(d => d.en !== quizData.current.en && isMonth === monthEndings.test(d.en));
-    let distractors = shuffle(pool).slice(0, 3);
+    quizData.current = pool[Math.floor(Math.random() * pool.length)];
+    // 生成 3 个干扰项（同类别）
+    let distPool = pool.filter(d => d.en !== quizData.current.en);
+    let distractors = shuffle(distPool).slice(0, 3);
     while (distractors.length < 3) {
-        const fb = DATE_QUIZ.filter(d => !distractors.includes(d) && d.en !== quizData.current.en);
+        const fb = DATE_QUIZ.filter(d => !distractors.includes(d) && d.en !== quizData.current.en && d.cat === quizData.current.cat);
         if (fb.length === 0) break;
         distractors.push(fb[Math.floor(Math.random() * fb.length)]);
     }
     quizData.options = shuffle([quizData.current, ...distractors]);
     quizData.answered = false;
+    // 随机选择显示全称或缩写（仅月份有缩写）
+    const useAbbr = quizData.current.abbr && Math.random() < 0.5;
+    quizData.questionText = useAbbr ? quizData.current.abbr : quizData.current.en;
     // 渲染
-    quizEng.textContent = quizData.current.en;
+    quizEng.textContent = quizData.questionText;
     quizOptions.innerHTML = quizData.options.map((opt, i) =>
         `<div class="quiz-opt" data-idx="${i}" data-zh="${opt.zh}">${opt.zh}</div>`
     ).join("");
@@ -1631,7 +1787,12 @@ function loadQuiz() {
             const chosen = el.dataset.zh;
             const isCorrect = chosen === quizData.current.zh;
             if (isCorrect) { quizData.correct++; el.classList.add("correct"); }
-            else { quizData.wrong++; el.classList.add("wrong"); }
+            else {
+                quizData.wrong++; el.classList.add("wrong");
+                // 记录错误
+                const key = quizData.current.en;
+                quizData.wrongCounts[key] = (quizData.wrongCounts[key] || 0) + 1;
+            }
             quizOptions.querySelectorAll(".quiz-opt").forEach(oe => {
                 oe.classList.add("disabled");
                 if (oe.dataset.zh === quizData.current.zh) oe.classList.add("correct");
@@ -1642,6 +1803,8 @@ function loadQuiz() {
             quizData.total++;
             quizProgress.textContent = `答 ${quizData.total} 题 · 正确率 ${Math.round(quizData.correct / quizData.total * 100)}%`;
             quizNextBtn.classList.remove("hidden");
+            // 满 30 题弹分析
+            if (quizData.total % 30 === 0) showQuizAnalysis();
         });
     });
 }
@@ -1649,10 +1812,32 @@ function loadQuiz() {
 document.addEventListener("click", e => {
     if (e.target.id === "quizSpeakBtn" && quizData.current) {
         e.stopPropagation();
-        quizSpeak(quizData.current.en);
+        quizSpeak(quizData.questionText || quizData.current.en);
     }
 });
 $("quizNextBtn").addEventListener("click", loadQuiz);
+// 筛选筹码点击
+document.querySelector(".quiz-filter").addEventListener("click", e => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    const qcat = chip.dataset.qcat;
+    if (!qcat || qcat === quizCategory) return;
+    quizCategory = qcat;
+    document.querySelectorAll(".quiz-filter .chip").forEach(c => c.classList.toggle("active", c.dataset.qcat === qcat));
+    resetQuizStats();
+    loadQuiz();
+});
+// 分析面板按钮
+document.addEventListener("click", e => {
+    if (e.target.id === "qaaClose") {
+        $("quizAnalysisOverlay").classList.remove("show");
+    }
+    if (e.target.id === "qaaReset") {
+        $("quizAnalysisOverlay").classList.remove("show");
+        resetQuizStats();
+        loadQuiz();
+    }
+});
 
 // ===================== 11. Tab 切換 =====================
 const SECTIONS = {
