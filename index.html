@@ -283,11 +283,11 @@
             color: #ffd54f;
             font-weight: 600;
         }
-        /* 人員組織圖 */
-        .people-section { display: none; }
-        .people-section.active { display: block; }
-        .phone-section { display: none; }
-        .phone-section.active { display: block; }
+        /* 高層/電話 */
+        .exec-section { display: none; }
+        .exec-section.active { display: block; }
+        .exec-content { display: block; }
+        .exec-content.hidden { display: none; }
         .vocab-section { display: block; }
         .vocab-section.hidden { display: none; }
 
@@ -668,6 +668,202 @@
             background: #3a3a55;
             color: #ccc;
         }
+        /* 子标签 */
+        .sub-tab-row {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333355;
+            margin-bottom: 8px;
+        }
+        .sub-tab-row .sub-chip {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 10px;
+            background: #2d2d44;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+        .sub-tab-row .sub-chip.active {
+            background: #0288d1;
+            color: #fff;
+        }
+        .sub-tab-row .sub-chip:active { opacity: 0.7; }
+        /* Flag 内容 */
+        .flag-list { padding: 0 0 10px; }
+        .flag-item {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+        .flag-item .flag-num {
+            display: inline-block;
+            background: #0288d1;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 6px;
+            padding: 2px 8px;
+            margin-right: 8px;
+        }
+        .flag-item .flag-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffd54f;
+        }
+        .flag-item .flag-desc {
+            font-size: 13px;
+            color: #ccc;
+            margin-top: 6px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .flag-vocab-area, .flag-content-area { display: block; }
+        .flag-vocab-area.hidden, .flag-content-area.hidden { display: none; }
+        /* 操作介面 */
+        .ops-section { display: none; }
+        .ops-section.active { display: block; }
+        .ops-item {
+            background: #24243b;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+        .ops-item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333355;
+        }
+        .ops-num {
+            background: #0288d1;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 6px;
+            padding: 3px 9px;
+            flex-shrink: 0;
+        }
+        .ops-en-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffd54f;
+            letter-spacing: 0.5px;
+        }
+        .ops-zh-title {
+            font-size: 12px;
+            color: #aaa;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .ops-item-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .ops-item-list li {
+            font-size: 13.5px;
+            color: #ddd;
+            line-height: 1.7;
+            padding: 3px 0 3px 16px;
+            position: relative;
+        }
+        .ops-item-list li::before {
+            content: "·";
+            color: #0288d1;
+            font-weight: 700;
+            position: absolute;
+            left: 4px;
+        }
+        .ops-form { padding: 4px 0; }
+        .ops-field {
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            background: #1e1e32;
+            border-radius: 8px;
+        }
+        .ops-label {
+            font-size: 11px;
+            color: #0288d1;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ops-value {
+            font-size: 13px;
+            color: #eee;
+            line-height: 1.6;
+        }
+        .ops-tag {
+            color: #ffd54f;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+        .ops-dropdown,
+        select.ops-dropdown {
+            display: inline-block;
+            background: #2a2a48;
+            border: 1px solid #444470;
+            border-radius: 5px;
+            padding: 2px 10px;
+            color: #ccc;
+            font-size: 12.5px;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 22px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 10px 6px;
+        }
+        select.ops-dropdown option {
+            background: #1e1e3a;
+            color: #eee;
+        }
+        select.ops-dropdown:focus {
+            border-color: #7c7cf0;
+            box-shadow: 0 0 4px rgba(124,124,240,.4);
+        }
+        .ops-hint {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .ops-sub {
+            font-size: 12px;
+            color: #bbb;
+            margin-top: 4px;
+            padding-left: 4px;
+        }
+        .ops-note {
+            font-size: 12px;
+            color: #ff8a80;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background: #2a1a1a;
+            border-radius: 5px;
+            border-left: 3px solid #ff5252;
+        }
+        /* 新會員分頁 */
+        .ops-content { display: block; }
+        .ops-content.hidden { display: none; }
+        #opsMemberArea .ops-field:last-child { margin-bottom: 0; }
+        #regionSelect:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -677,14 +873,18 @@
     </div>
 
     <div class="tab-bar">
-        <div class="tab active" data-tab="vocab">📖 單詞</div>
-        <div class="tab" data-tab="people">👥 人員</div>
-        <div class="tab" data-tab="phone">📞 電話</div>
-        <div class="tab" data-tab="quiz">✍️ 測試</div>
+        <div class="tab active" data-tab="vocab">單詞/Flag</div>
+        <div class="tab" data-tab="ops">操作介面</div>
+        <div class="tab" data-tab="exec">高層 / 電話</div>
+        <div class="tab" data-tab="quiz">測試</div>
     </div>
 
     <div class="vocab-section" id="vocabSection">
     <div class="control-bar">
+        <div class="row sub-tab-row">
+            <div class="sub-chip active" data-vocab-sub="vocab">📖 單詞</div>
+            <div class="sub-chip" data-vocab-sub="flag">🚩 Flag</div>
+        </div>
         <div class="row">
             <span class="row-label">语速</span>
             <input type="range" id="rateRange" min="0.5" max="1.5" step="0.05" value="0.7">
@@ -705,6 +905,7 @@
         </div>
     </div>
 
+    <div class="flag-vocab-area" id="flagVocabArea">
     <div class="voice-tip" id="voiceTip"></div>
 
     <div class="card">
@@ -728,13 +929,172 @@
     <select id="jumpSelect" class="select-box" style="width:100%;padding:12px;font-size:15px;border-radius:8px;border:none;background:#2d2d44;color:#fff;"></select>
     </div>
 
-    <div class="people-section" id="peopleSection">
-        <div id="orgContainer"></div>
+    <div class="flag-content-area hidden" id="flagContent">
+        <div class="flag-list" id="flagList"></div>
+    </div>
     </div>
 
-    <div class="phone-section" id="phoneSection">
-        <input class="phone-search" id="phoneSearch" type="text" placeholder="🔍 搜索部门、号码或关键词…" autocomplete="off">
-        <div id="phoneContainer"></div>
+    <div class="ops-section" id="opsSection">
+        <div class="sub-tab-row" style="padding:0 0 12px 0;border-bottom:1px solid #333355;margin-bottom:12px;">
+            <div class="sub-chip active" data-ops-sub="card">介面操作</div>
+            <div class="sub-chip" data-ops-sub="member">新會員</div>
+        </div>
+        <div class="ops-content" id="opsCardArea">
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">1</span>
+                    <span class="ops-en-title">OVERVIEW</span>
+                    <span class="ops-zh-title">總覽</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇 current trip</li>
+                    <li>睇贏輸數</li>
+                    <li>睇今日打左幾分</li>
+                    <li>睇呢個月打左幾分</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">2</span>
+                    <span class="ops-en-title">EVALUATION ANALYSIS</span>
+                    <span class="ops-zh-title">評估分析</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇投注紀錄，比如客人話今日啲分喺櫃度唔準嘅時候，我哋就開呢個嚟睇</li>
+                    <li>一般兩三種情況，例：個客走埋嚟就話我今日手機 APP 睇啲分數唔準啊，跟住佢就過嚟櫃度嘈雜啊，佢話啲分數都記到唔準咁樣，你就問佢先，問佢你最後幾點離開張台。</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">3</span>
+                    <span class="ops-en-title">OPPORTUNITY</span>
+                    <span class="ops-zh-title">機會</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇公關贈送比客人嘅嘢出左嘅嘢（房間，limo，船票）</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">4</span>
+                    <span class="ops-en-title">E-VOUCHER</span>
+                    <span class="ops-zh-title">電子券</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>電子卷換了什麼</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">5</span>
+                    <span class="ops-en-title">REMARKS</span>
+                    <span class="ops-zh-title">備註</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇留言（但係幾時會睇）</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">6</span>
+                    <span class="ops-en-title">COMP HISTORY</span>
+                    <span class="ops-zh-title">贈碼歷史</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇之前 Comp 嘅歷史。</li>
+                </ul>
+            </div>
+        </div>
+        <div class="ops-content hidden" id="opsMemberArea">
+            <div class="ops-field">
+                <div class="ops-label">1 号框标注</div>
+                <div class="ops-value">
+                    <span class="ops-tag">Title:</span>
+                    <select class="ops-dropdown">
+                        <option value="MR 先生" selected>MR 先生</option>
+                        <option value="MS 小姐">MS 小姐</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ops-field">
+                <div class="ops-label">國家 / 地區</div>
+                <div class="ops-value">
+                    <span class="ops-tag">Country:</span>
+                    <select class="ops-dropdown" id="countrySelect">
+                        <option value="MACAU" selected>MACAU 澳門</option>
+                        <option value="HONG KONG">HONG KONG 香港</option>
+                        <option value="CHINA">CHINA 中國</option>
+                        <option value="THAILAND">THAILAND 泰國</option>
+                        <option value="VIETNAM">VIETNAM 越南</option>
+                        <option value="MALAYSIA">MALAYSIA 馬來西亞</option>
+                        <option value="SINGAPORE">SINGAPORE 新加坡</option>
+                        <option value="INDONESIA">INDONESIA 印尼</option>
+                        <option value="PHILIPPINES">PHILIPPINES 菲律賓</option>
+                        <option value="MYANMAR">MYANMAR 緬甸</option>
+                        <option value="CAMBODIA">CAMBODIA 柬埔寨</option>
+                        <option value="LAOS">LAOS 老撾</option>
+                        <option value="BRUNEI">BRUNEI 文萊</option>
+                        <option value="EAST TIMOR">EAST TIMOR 東帝汶</option>
+                        <option value="JAPAN">JAPAN 日本</option>
+                        <option value="SOUTH KOREA">SOUTH KOREA 南韓</option>
+                        <option value="UK">UK 英國</option>
+                        <option value="USA">USA 美國</option>
+                        <option value="FRANCE">FRANCE 法國</option>
+                        <option value="ITALY">ITALY 意大利</option>
+                        <option value="PORTUGAL">PORTUGAL 葡萄牙</option>
+                        <option value="SPAIN">SPAIN 西班牙</option>
+                        <option value="RUSSIA">RUSSIA 俄羅斯</option>
+                    </select>
+                </div>
+                <div class="ops-value" style="margin-top:4px;">
+                    <span class="ops-tag">Region:</span>
+                    <select class="ops-dropdown" id="regionSelect">
+                        <option value="" selected>--Select-- (省份 限中國客人)</option>
+                        <option value="广东">广东</option>
+                        <option value="福建">福建</option>
+                        <option value="浙江">浙江</option>
+                        <option value="江苏">江苏</option>
+                        <option value="上海">上海</option>
+                        <option value="北京">北京</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ops-field">
+                <div class="ops-label">3、4 号框（联络电话）</div>
+                <div class="ops-value">
+                    <span class="ops-tag">Cell Phone:</span> 85361734678
+                </div>
+                <div class="ops-value" style="margin-top:2px;">
+                    <span class="ops-tag">Postal Phone:</span> Home
+                </div>
+            </div>
+            <div class="ops-field">
+                <div class="ops-label">5 号框标注</div>
+                <div class="ops-value">
+                    <span class="ops-tag">Expire Date:</span> 89/10/23
+                </div>
+                <div class="ops-note">备注：HK ID 填 3 年後的今日</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exec-section" id="execSection">
+        <div class="sub-tab-row" style="padding:0 0 12px 0;border-bottom:1px solid #333355;margin-bottom:12px;">
+            <div class="sub-chip active" data-exec-sub="people">👥 高層</div>
+            <div class="sub-chip" data-exec-sub="phone">📞 電話</div>
+        </div>
+        <div class="exec-content" id="execPeopleArea">
+            <div id="orgContainer"></div>
+        </div>
+        <div class="exec-content hidden" id="execPhoneArea">
+            <input class="phone-search" id="phoneSearch" type="text" placeholder="🔍 搜索部门、号码或关键词…" autocomplete="off">
+            <div id="phoneContainer"></div>
+        </div>
     </div>
 
     <div class="quiz-section" id="quizSection">
@@ -1141,6 +1501,40 @@ const RAW = [
 // 加 id 與默認 favorite=false
 const wordList = RAW.map((r, i) => ({ id: i, group: r[0], eng: r[1], cn: r[2], favorite: false }));
 
+// ===================== 1b. Flag 资料 =====================
+const FLAG_DATA = [
+    { num: "5", title: "政府黑名單", desc: "更新客人資料, call AMM,保安, CCTV,等人哋帶走客人/或指出客人離開方向" },
+    { num: "6", title: "自我隔離", desc: "更新客人資料, call AMM,保安,check" },
+    { num: "7", title: "公司黑名單", desc: "更新客人資料，通知AMM，暗號code Hotel" },
+    { num: "8", title: "公司黑名單", desc: "更新客人資料，通知AMM，暗號code Hotel" },
+    { num: "9", title: "⭐ PEP", desc: "政治敏感人物，可以出活動，但係唔可以出comp" },
+    { num: "10", title: "⭐ 反貪污政策", desc: "政治敏感人物，可以出活動，但係唔可以出comp" },
+    { num: "16", title: "臨時咭Flag", desc: "臨時咭Flag 16 17 20" },
+    { num: "17", title: "臨時咭Flag", desc: "臨時咭Flag 16 17 20" },
+    { num: "20", title: "臨時咭Flag", desc: "臨時咭Flag 16 17 20" },
+    { num: "23", title: "⭐ update資料", desc: "打開MIP或GUI會彈23，然之後咧就check下啲資料係咪更新啦。影相補資料記得抄低個會員號碼，去翻C counter度填翻份實體嘅log紙，要提醒AMM / M去改翻同剝23\n喺紙度寫Flag 23，當新會員" },
+    { num: "27", title: "OFAC 國家", desc: "（古巴，伊朗，敘利亞，北韓，烏克蘭克里米亞，盧甘斯克，頓內次克）\n更新客人資料，通知AMM，CCTV ，check是否指定國家？協助並帶走客人，不能開卡" },
+    { num: "28", title: "請核實並更新，以確保並非來自Ofac", desc: "更新有效證件，如果不是OFAC，通知AMM，移走Flag並補卡" },
+    { num: "36", title: "立即向保安部發出警報", desc: "這是保安要找的客人" },
+    { num: "37", title: "請客人出示ID", desc: "check本人,幫客人影相, call AMM,重新set密碼" },
+    { num: "38", title: "會員資格已被賭場行銷部門撤銷", desc: "請勿恢復會員資格，無需聯絡保安和CCTV，不能補發會員卡\n基於保安理由xx先生/小姐不能補發卡\n但我哋仍然歡迎先生/小姐繼續喺我哋娛樂場度玩" },
+    { num: "51", title: "同38", desc: "意思同上邊38一樣" },
+    { num: "52", title: "同38", desc: "意思同上邊38一樣" },
+    { num: "57", title: "⭐ 懷疑賣房", desc: "" },
+    { num: "58", title: "⭐ AMM收到保安郵件，Ruby2以上客人，有賣房行為", desc: "就會標注flag 58，有效期為180日" },
+    { num: "59", title: "AMM收到郵件後，金卡和紅卡確定有賣房行為", desc: "將取消客人預訂房間並取消Account" },
+    { num: "62", title: "⭐ 警告對賭行為", desc: "用作記錄同埋提醒同事，該客人曾經做出過對賭行為，只要客人符合條件，仍可為客人預訂房間\n*若需要客人sr app" },
+    { num: "63", title: "⭐ 被撤銷帳戶記錄", desc: "通知AMM標注為Flag 63，客人曾有不當行為而被撤銷，客人要求重新激活需要審核才能重新激活" },
+    { num: "68", title: "⭐ e sign up form ⚠️睇多次電腦⚠️", desc: "" },
+    { num: "80", title: "只有帳戶唔需要補卡", desc: "外國人喺外國枱，有會員，但客人唔知道" },
+    { num: "87", title: "⭐ 註冊資料不完整的客戶", desc: "打完資料search 會發現彈flag 87 協助客人到櫃檯更新資料完成流程，影相 證件 電話 e-sign up form 打電話解\nflag 87 印卡" },
+    { num: "88", title: "重複開卡", desc: "" },
+    { num: "89", title: "廿一點黑名單", desc: "" },
+    { num: "90", title: "可以開卡，但係唔可以玩廿一點", desc: "" },
+    { num: "91", title: "提示賭枱同事Flag 91", desc: "慢慢計數，千祈唔好計錯，不需要同客人講" },
+    { num: "98", title: "通知賭枱上級ACM或者CM", desc: "客人不容許投注" }
+];
+
 // ===================== 2. 持久化：localStorage =====================
 const STORAGE_KEY = "floor-op-state-v1";
 const State = {
@@ -1272,6 +1666,20 @@ function rebuildSelect() {
         opt.textContent = `${i + 1}. ${head}`;
         jumpSelect.appendChild(opt);
     });
+}
+
+// ===================== 5b. Flag 渲染 =====================
+function renderFlag() {
+    const container = $("flagList");
+    if (!container) return;
+    container.innerHTML = FLAG_DATA.map(f => {
+        const star = f.title.startsWith("⭐") ? " ⭐" : "";
+        return `<div class="flag-item">
+            <span class="flag-num">${f.num}</span>
+            <span class="flag-title">${f.title}</span>
+            ${f.desc ? `<div class="flag-desc">${escapeHTML(f.desc)}</div>` : ""}
+        </div>`;
+    }).join("");
 }
 
 // ===================== 6. 朗讀引擎（跟讀高亮） =====================
@@ -1839,12 +2247,92 @@ document.addEventListener("click", e => {
     }
 });
 
+// ===================== 10b. 子標籤切換（單詞/Flag） =====================
+const $flagVocabArea = $("flagVocabArea");
+const $flagContent = $("flagContent");
+document.querySelector(".sub-tab-row")?.addEventListener("click", e => {
+    const chip = e.target.closest(".sub-chip");
+    if (!chip) return;
+    const sub = chip.dataset.vocabSub;
+    if (!sub) return;
+    document.querySelectorAll(".sub-chip").forEach(c => c.classList.toggle("active", c === chip));
+    if (sub === "vocab") {
+        $flagVocabArea?.classList.remove("hidden");
+        $flagContent?.classList.add("hidden");
+    } else {
+        $flagVocabArea?.classList.add("hidden");
+        $flagContent?.classList.remove("hidden");
+    }
+});
+
+// ===================== 10b. 子標籤切換（操作介面） =====================
+document.querySelector(".ops-section .sub-tab-row")?.addEventListener("click", e => {
+    const chip = e.target.closest(".sub-chip");
+    if (!chip) return;
+    const sub = chip.dataset.opsSub;
+    if (!sub) return;
+    document.querySelectorAll(".ops-section .sub-chip").forEach(c => c.classList.toggle("active", c === chip));
+    const $card = $("opsCardArea");
+    const $member = $("opsMemberArea");
+    if (sub === "card") {
+        $card?.classList.remove("hidden");
+        $member?.classList.add("hidden");
+    } else {
+        $card?.classList.add("hidden");
+        $member?.classList.remove("hidden");
+    }
+});
+
+// ===================== Country → Region 联动 =====================
+(function(){
+    const $country = document.getElementById("countrySelect");
+    const $region  = document.getElementById("regionSelect");
+    if (!$country || !$region) return;
+    function syncRegion(){
+        if ($country.value === "CHINA") {
+            $region.disabled = false;
+            $region.style.opacity = "";
+        } else {
+            $region.disabled = true;
+            $region.value = "";
+            $region.style.opacity = ".5";
+        }
+    }
+    $country.addEventListener("change", syncRegion);
+    syncRegion();
+})();
+
+// ===================== 10c. 子標籤切換（高層/電話） =====================
+document.querySelector(".exec-section .sub-tab-row")?.addEventListener("click", e => {
+    const chip = e.target.closest(".sub-chip");
+    if (!chip) return;
+    const sub = chip.dataset.execSub;
+    if (!sub) return;
+    document.querySelectorAll(".exec-section .sub-chip").forEach(c => c.classList.toggle("active", c === chip));
+    const $people = $("execPeopleArea");
+    const $phone = $("execPhoneArea");
+    if (sub === "people") {
+        $people?.classList.remove("hidden");
+        $phone?.classList.add("hidden");
+        renderPeople();
+    } else {
+        $people?.classList.add("hidden");
+        $phone?.classList.remove("hidden");
+        const val = $("phoneSearch")?.value.trim() || "";
+        renderPhone(val);
+    }
+});
+// 电话搜索
+$("phoneSearch")?.addEventListener("input", e => {
+    renderPhone(e.target.value.trim());
+});
+
 // ===================== 11. Tab 切換 =====================
 const SECTIONS = {
     vocab:  { el: () => $("vocabSection"),  show: e => e.classList.remove("hidden"), hide: e => e.classList.add("hidden") },
-    people: { el: () => $("peopleSection"), show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") },
-    phone:  { el: () => $("phoneSection"),  show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") },
-    quiz:   { el: () => $("quizSection"),   show: e => e.classList.add("active"),  hide: e => e.classList.remove("active") }
+    ops:    { el: () => $("opsSection"),    show: e => e.classList.add("active"),    hide: e => e.classList.remove("active") },
+    exec:   { el: () => $("execSection"),   show: e => e.classList.add("active"),    hide: e => e.classList.remove("active") },
+    quiz:   { el: () => $("quizSection"),   show: e => e.classList.add("active"),    hide: e => e.classList.remove("active") }
 };
 document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -1855,7 +2343,7 @@ document.querySelectorAll(".tab").forEach(tab => {
             const s = SECTIONS[key], el = s.el();
             if (el) (key === tabName ? s.show : s.hide)(el);
         });
-        if (tabName === "phone") renderPhone($("phoneSearch").value.trim());
+        if (tabName === "exec") renderPeople();
         if (tabName === "quiz") loadQuiz();
     });
 });
@@ -1891,6 +2379,7 @@ updateAutoUI();
 render();
 renderPeople();
 renderPhone();
+renderFlag();
 loadQuiz();
 unlockVoices();
 
