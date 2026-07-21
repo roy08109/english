@@ -783,6 +783,16 @@
             position: absolute;
             left: 4px;
         }
+        .ops-item-sub {
+            font-size: 13px;
+            color: #c8c8e0;
+            line-height: 1.6;
+            padding: 5px 0 3px 16px;
+            border-left: 2px solid #555588;
+            margin: 4px 0 2px 8px;
+            padding-left: 12px;
+        }
+        .ops-item-sub strong { color: #ffcc66; }
         .ops-form { padding: 4px 0; }
         .ops-field {
             margin-bottom: 10px;
@@ -856,10 +866,8 @@
             border-radius: 5px;
             border-left: 3px solid #ff5252;
         }
-        /* 新會員分頁 */
         .ops-content { display: block; }
         .ops-content.hidden { display: none; }
-        #opsMemberArea .ops-field:last-child { margin-bottom: 0; }
         #regionSelect:disabled {
             opacity: .45;
             cursor: not-allowed;
@@ -936,21 +944,148 @@
 
     <div class="ops-section" id="opsSection">
         <div class="sub-tab-row" style="padding:0 0 12px 0;border-bottom:1px solid #333355;margin-bottom:12px;">
-            <div class="sub-chip active" data-ops-sub="card">介面操作</div>
+            <div class="sub-chip active" data-ops-sub="gui">GUI</div>
+            <div class="sub-chip" data-ops-sub="mip">Mip</div>
+            <div class="sub-chip" data-ops-sub="rs">Rs</div>
             <div class="sub-chip" data-ops-sub="member">新會員</div>
         </div>
-        <div class="ops-content" id="opsCardArea">
+        <div class="ops-content" id="opsGuiArea">
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">⭐</span>
+                    <span class="ops-en-title">打俾細更</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>1. 先講做咩？</li>
+                    <li>2. 會員Number</li>
+                    <li>3. 客人姓什麼</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">1</span>
+                    <span class="ops-en-title">開卡</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>姓 - 名 - 出生日期</li>
+                    <li>姓 - 名 - 稱呼 - 電話(加區號) - send Mail to home - 國家(如大陸需填省份) - 護照號碼 - 有效日期</li>
+                    <li>幫客人影相 - 影ID - (找 populate scan info)</li>
+                    <li>打開 Host Mobile 叫客人填返 E sing up form，填電話同簽名，記得會員卡號寫返功課紙</li>
+                    <li>叫客人輸入返四位數嘅密碼</li>
+                    <li>完成步驟出卡</li>
+                </ul>
+            </div>
+
+            <div class="ops-item" style="border-color:#ff6b6b;">
+                <div class="ops-item-header">
+                    <span class="ops-num">⚠</span>
+                    <span class="ops-en-title">SBID: 填乜嘢</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>7: SBID 注意事項 - 確認填寫內容</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">2</span>
+                    <span class="ops-en-title">補卡</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>右上角打會員號碼（如果冇號碼就用證件 search）</li>
+                    <li>撳入去黃色嗰條嘢度，就有客人嘅資料，copy 會員 Number，去大眼仔睇客人個樣同埋 ID，睇完 Remake 之後冇問題就正常出卡</li>
+                    <li>Issue Replacement Cards → 㩒 void-submit</li>
+                </ul>
+                <div class="ops-item-sub">
+                    <strong>a.</strong> 如果彈出視窗顯示有冇重覆名、出生日期 — 有就要睇清楚兩個舊號嘅 remark 邊個補得邊個唔補得，冇 flag 就通知 AMM 叫佢哋跟進
+                </div>
+                <div class="ops-item-sub">
+                    <strong>b.</strong> 灰了！！如果一年冇嚟過就會變咗 inactive，打俾細更，Premium Service Mandy，patron NO xxxxx（例如 CA I蔡），影好證件同相等經理確認之後再出卡（留意證件有冇到期），睇埋使唔使幫佢影相同 ID
+                </div>
+                <div class="ops-item-sub">
+                    <strong>c.</strong> 系統彈出 87，幫客人影咗相同 ID，打俾細更，報自己個名，然後講 87，講會員號碼，等經理確認之後就可以補卡
+                </div>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">3</span>
+                    <span class="ops-en-title">改密碼</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>打俾細更講：mandy，會員 Number 幾多，姓乜，改幾多位數密碼</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">4</span>
+                    <span class="ops-en-title">更新資料</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇 Remark</li>
+                    <li>幫客人影相 - 影 ID - (找 populate scan info)</li>
+                    <li>contact info 更新客人電話 — 點選 order contact Information — 點選中間第一個圖示 add — 揀選返更新電話或者 WeChat — 隔籬選項填 update on 幾時 form Mandy</li>
+                    <li>開卡時客人同名同生日：同樣嘅開卡程序，下邊會顯示一項黃色，複製黃色嗰度嘅會員 Number，去 click to View 打複製會員號碼，確認係咪同一個人；如果唔係同一個人左上方有一個 add Patron，繼續新開卡流程，save 後再彈出提醒就要搵經理查看，經理輸入搞掂之後㩒 next，叫客人輸入四位數密碼兩次</li>
+                </ul>
+            </div>
+
+            <div class="ops-item" style="border-color:#ff6b6b;">
+                <div class="ops-item-header">
+                    <span class="ops-num">⚠</span>
+                    <span class="ops-en-title">出 Comp — 唔知幾時需要出？</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li><strong>Revenue Carter:</strong> Dw4 /</li>
+                    <li><strong>No of persons:</strong> 1</li>
+                    <li><strong>Persons comped:</strong> 1</li>
+                    <li><strong>comment:</strong> SCL F&B / shawl / Ferry / 找代碼，app byxxx（如有需要 app）</li>
+                    <li><strong>COMP VALUE:</strong> 價值幾錢</li>
+                    <li><strong>COMP DESCRIPTION:</strong> 出了什麼 FERRY / FB / SHAWL</li>
+                    <li><strong>REQUESTED BY:</strong> 自己個名</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">▼</span>
+                    <span class="ops-en-title">補充備註</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li><strong>DW4</strong> — 電子錢包</li>
+                    <li><strong>027-D</strong> — comp 額外贈送</li>
+                    <li><strong>COMP SLIP 四方飛</strong> — 需要聯我哋部機</li>
+                    <li>如果客人有兩個電話 Number，想更新第三個就要用 e sing up form 填會員 Number 同新電話號碼，去額外資料度填寫剷除 cell 1 or 2，然後有空同經理講返聲</li>
+                    <li><strong>補卡（冇帶證件）</strong>：客人一定要帶證件過嚟，如果冇帶證件掉張房卡過嚟，知道會員 Number，就 check 佢有冇訂過房，今日有訂過房就可以出俾佢</li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="ops-content hidden" id="opsMipArea">
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">⭐</span>
+                    <span class="ops-en-title">MIP 注意事項</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇 MIP 一定要 check 大眼仔，睇 Remark</li>
+                    <li>做房要睇 A D T 5000 以上</li>
+                </ul>
+            </div>
+
             <div class="ops-item">
                 <div class="ops-item-header">
                     <span class="ops-num">1</span>
                     <span class="ops-en-title">OVERVIEW</span>
-                    <span class="ops-zh-title">總覽</span>
                 </div>
                 <ul class="ops-item-list">
                     <li>睇 current trip</li>
                     <li>睇贏輸數</li>
-                    <li>睇今日打左幾分</li>
-                    <li>睇呢個月打左幾分</li>
+                    <li>睇今日打咗幾分</li>
+                    <li>睇呢個月打咗幾分</li>
                 </ul>
             </div>
 
@@ -958,22 +1093,25 @@
                 <div class="ops-item-header">
                     <span class="ops-num">2</span>
                     <span class="ops-en-title">EVALUATION ANALYSIS</span>
-                    <span class="ops-zh-title">評估分析</span>
                 </div>
                 <ul class="ops-item-list">
-                    <li>睇投注紀錄，比如客人話今日啲分喺櫃度唔準嘅時候，我哋就開呢個嚟睇</li>
-                    <li>一般兩三種情況，例：個客走埋嚟就話我今日手機 APP 睇啲分數唔準啊，跟住佢就過嚟櫃度嘈雜啊，佢話啲分數都記到唔準咁樣，你就問佢先，問佢你最後幾點離開張台。</li>
+                    <li>睇投注紀錄，例如客人話今日啲分喺枱度唔準嘅時候，開呢個嚟睇</li>
                 </ul>
+                <div class="ops-item-sub">
+                    <strong>情況一：</strong>客人走埋嚟話手機 APP 分數唔準，問佢最後幾點離開張枱
+                </div>
+                <div class="ops-item-sub">
+                    <strong>情況二：</strong>客人最後係邊張枱玩
+                </div>
             </div>
 
             <div class="ops-item">
                 <div class="ops-item-header">
                     <span class="ops-num">3</span>
                     <span class="ops-en-title">OPPORTUNITY</span>
-                    <span class="ops-zh-title">機會</span>
                 </div>
                 <ul class="ops-item-list">
-                    <li>睇公關贈送比客人嘅嘢出左嘅嘢（房間，limo，船票）</li>
+                    <li>睇公關贈送比客人嘅嘢出咗嘅嘢（房間、limo、船票）</li>
                 </ul>
             </div>
 
@@ -981,21 +1119,20 @@
                 <div class="ops-item-header">
                     <span class="ops-num">4</span>
                     <span class="ops-en-title">E-VOUCHER</span>
-                    <span class="ops-zh-title">電子券</span>
                 </div>
                 <ul class="ops-item-list">
-                    <li>電子卷換了什麼</li>
+                    <li>電子券換了什麼</li>
+                    <li>需要一次性使用 r 卡（E wallet 就鑽石卡以上，FB 可以分開用）</li>
                 </ul>
             </div>
 
             <div class="ops-item">
                 <div class="ops-item-header">
                     <span class="ops-num">5</span>
-                    <span class="ops-en-title">REMARKS</span>
-                    <span class="ops-zh-title">備註</span>
+                    <span class="ops-en-title">REMARK</span>
                 </div>
                 <ul class="ops-item-list">
-                    <li>睇留言（但係幾時會睇）</li>
+                    <li>睇留言</li>
                 </ul>
             </div>
 
@@ -1003,13 +1140,196 @@
                 <div class="ops-item-header">
                     <span class="ops-num">6</span>
                     <span class="ops-en-title">COMP HISTORY</span>
-                    <span class="ops-zh-title">贈碼歷史</span>
                 </div>
                 <ul class="ops-item-list">
-                    <li>睇之前 Comp 嘅歷史。</li>
+                    <li>睇之前 Comp 嘅歷史</li>
                 </ul>
             </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">▼</span>
+                    <span class="ops-en-title">房態備註</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li><strong>reserve</strong> — 辦理咗未入住</li>
+                    <li><strong>in-house</strong> — 已辦理入住</li>
+                    <li><strong>check out</strong> — 已退房</li>
+                    <li>Host Mobile 可以睇有冇房，如果冇房就打去 811-81408</li>
+                </ul>
+            </div>
+
         </div>
+
+        <div class="ops-content hidden" id="opsRsArea">
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">1</span>
+                    <span class="ops-en-title">My offer</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>呢張相如需要出 PC / SB / FB：</li>
+                    <li>1. 首先選擇要換啲乜</li>
+                    <li>2. 之後按 Apply</li>
+                    <li>3. 按 ✅ 顯示已選擇嘅 Offer (show selected offer)</li>
+                    <li>一定要咁樣操作，如果唔係系統會直接出 FreeOffer</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">2</span>
+                    <span class="ops-en-title">FREE OFFER</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>⭐ 問公關出唔出 ⭐</li>
+                    <li>記得 sales 服務時間係上 10 - 凌晨 2:00</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">3</span>
+                    <span class="ops-en-title">Upfront</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>斷 trip 2 日共七日可以出！去 Redemption History 睇吓有冇相隔七日</li>
+                    <li>例如有送酒店（有機會係指定酒店）要先入住先可以領</li>
+                    <li>F&B / PC / SB 要睇哥期活動可以揀邊樣，有時只可以餐卷</li>
+                    <li>⭐ 叫個客出示睇公關溝通訊息，睇下公關有冇指定比個客要邊樣 ⭐</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">4</span>
+                    <span class="ops-en-title">Standard Upfront / Transportation</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li><strong>Standard upfront</strong> — 多數叫客係手機自己操作</li>
+                    <li><strong>Transportation</strong> — 交通…可換一定要打電話俾公關 sales</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">5</span>
+                    <span class="ops-en-title">Welcome Offer</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>客人手機 Apps → 專屬禮遇 → 白色入邊就係 Welcome Offer</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">6</span>
+                    <span class="ops-en-title">DAILY OFFER</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>10 分換一個套餐一次</li>
+                    <li>35 分換 100 PC / SB / FB</li>
+                    <li>100 分換 600 FB</li>
+                    <li>當日打夠分數就可以換</li>
+                    <li>⭐ 如果當日冇打過但係又想換 PC/SB/FB，只要 promo 分夠都可以換當月活動，活動分別就係倍數冇咁多！因為 today 和 promo 係加埋一齊嘅</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">7</span>
+                    <span class="ops-en-title">當月 PROMO 分數換</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>100 分 → 300 SB</li>
+                    <li>150 分 → 300 PC / FB</li>
+                    <li>250 分 → 500 PC / FB</li>
+                    <li>1000 分 → 2000 PC / 3000 SB</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">8</span>
+                    <span class="ops-en-title">All You Choose</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>都係用 promo 分去換禮品（換禮品需要出單，還有我們簽名）</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">9</span>
+                    <span class="ops-en-title">Comp</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>⚠️ 需要再睇多次電腦 ⚠️</li>
+                    <li>到時八月再睇吓電腦用得未，最後先學</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">10</span>
+                    <span class="ops-en-title">Gaming Points REDEMPTION</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>⚠️ 需要再睇多次電腦 ⚠️</li>
+                    <li>如果所有分都用晒可以用底分換嘢，底分當錢用 1 分 = 1 蚊</li>
+                    <li>底分可以換泥碼或者老虎機，只可以換正數 100</li>
+                    <li>泥碼 — 叫佢直接去帳房</li>
+                    <li>老虎機 — 呢邊 Rs 出單比佢簽名</li>
+                    <li>所有單超過 1 萬都要我哋簽同客簽</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">11</span>
+                    <span class="ops-en-title">Promotions</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>⚠️ 需要再睇多次電腦 ⚠️</li>
+                    <li>可以睇可以兌換到咩活動，然後爭幾分可以完成兌換其中活動</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">12</span>
+                    <span class="ops-en-title">Manual Offer Assignment (MOA)</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>例如睇咗個客人合資格出到嘢比佢，但又唔見咗條 link，通知 AMM 手動入返條 link</li>
+                    <li>MOA 建議低調，廢事比個客知道 MOA 可以做到比佢，要離開隻客細細聲同 AMM 講</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">13</span>
+                    <span class="ops-en-title">Redemption History</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>睇過往紀錄換咗啲乜嘢</li>
+                    <li>可以喺呢度睇有冇相隔七日</li>
+                </ul>
+            </div>
+
+            <div class="ops-item">
+                <div class="ops-item-header">
+                    <span class="ops-num">▼</span>
+                    <span class="ops-en-title">Redemption History Detail</span>
+                </div>
+                <ul class="ops-item-list">
+                    <li>上一題的詳細版</li>
+                </ul>
+            </div>
+
+        </div>
+
         <div class="ops-content hidden" id="opsMemberArea">
             <div class="ops-field">
                 <div class="ops-label">1 号框标注</div>
@@ -2265,25 +2585,24 @@ document.querySelector(".sub-tab-row")?.addEventListener("click", e => {
     }
 });
 
-// ===================== 10b. 子標籤切換（操作介面） =====================
-document.querySelector(".ops-section .sub-tab-row")?.addEventListener("click", e => {
-    const chip = e.target.closest(".sub-chip");
-    if (!chip) return;
-    const sub = chip.dataset.opsSub;
-    if (!sub) return;
-    document.querySelectorAll(".ops-section .sub-chip").forEach(c => c.classList.toggle("active", c === chip));
-    const $card = $("opsCardArea");
-    const $member = $("opsMemberArea");
-    if (sub === "card") {
-        $card?.classList.remove("hidden");
-        $member?.classList.add("hidden");
-    } else {
-        $card?.classList.add("hidden");
-        $member?.classList.remove("hidden");
-    }
-});
+// ===================== 10b. 子標籤切換（操作介面 → GUI / Mip / Rs） =====================
+(function(){
+    const areas = ["opsGuiArea","opsMipArea","opsRsArea","opsMemberArea"];
+    document.querySelector(".ops-section .sub-tab-row")?.addEventListener("click", e => {
+        const chip = e.target.closest(".sub-chip");
+        if (!chip) return;
+        const sub = chip.dataset.opsSub;
+        if (!sub) return;
+        document.querySelectorAll(".ops-section .sub-chip").forEach(c => c.classList.toggle("active", c === chip));
+        const id = "ops" + sub.charAt(0).toUpperCase() + sub.slice(1) + "Area";
+        areas.forEach(name => {
+            const el = document.getElementById(name);
+            if (el) el.classList.toggle("hidden", name !== id);
+        });
+    });
+})();
 
-// ===================== Country → Region 联动 =====================
+// ===================== Country → Region 联动（新會員） =====================
 (function(){
     const $country = document.getElementById("countrySelect");
     const $region  = document.getElementById("regionSelect");
